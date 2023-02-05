@@ -1,4 +1,4 @@
-import { calcRandomPosition, Card, CardType, CardValue, enumToArrayNumericValues } from './models';
+import { calcRandomPosition, Card, CardType, cardValue, enumToArrayKeys, enumToArrayNumericValues } from './models';
 
 
 export class CardsHelper {
@@ -10,7 +10,12 @@ export class CardsHelper {
   }
 
    private generateDeck(): Card[] {
-    return enumToArrayNumericValues(CardType).map(type => enumToArrayNumericValues(CardValue).map(value => ({ type, value}))).flat();
+    return enumToArrayNumericValues(CardType).map(type => enumToArrayNumericValues(cardValue).map(value => ({
+      type,
+      value,
+      isShown: false,
+      img: CardsHelper.getImgPath(type, value)}))
+    ).flat();
   }
 
   private shuffle(deck: Card[]): Card[] {
@@ -33,5 +38,9 @@ export class CardsHelper {
 
   public getDeck(): Card[] {
     return this.shuffle(this.cardDeck);
+  }
+
+  private static getImgPath(type: number, value: number ): string {
+    return `./assets/cards-images/${Object.keys(cardValue)[value -1]}_${enumToArrayKeys(CardType)[type].toLowerCase()}.png`;
   }
 }

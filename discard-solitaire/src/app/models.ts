@@ -1,6 +1,8 @@
 export interface Card {
   type: CardType;
-  value: CardValue;
+  value: number;
+  img: string;
+  isShown: boolean;
 }
 
 export enum CardType {
@@ -10,24 +12,27 @@ export enum CardType {
   Diamond
 }
 
-export enum CardValue {
-  Ace = 1,
-  Two = 2,
-  Three = 3,
-  Four = 4,
-  Five = 5,
-  Six = 6,
-  Seven = 7,
-  Eight = 8,
-  Nine = 9,
-  Ten = 10,
-  Jack = 11,
-  Queen = 12,
-  King = 13
+export const cardValue = {
+  ace : 1,
+  2 : 2,
+  3 : 3,
+  4 : 4,
+  5 : 5,
+  6: 6,
+  7 : 7,
+  8 : 8,
+  9 : 9,
+  10 : 10,
+  jack : 11,
+  queen : 12,
+  king : 13
 }
-
 export function enumToArrayNumericValues<T>(enumObject: T): Array<T[keyof T]> {
   return Object.values(enumObject).filter(v => !(typeof v === 'string'));
+}
+
+export function enumToArrayKeys<T>(enumObject: T): Array<keyof T> {
+  return Object.values(enumObject).filter(v => typeof v === 'string');
 }
 
 export function calcRandomPosition() {
