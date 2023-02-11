@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Card, CardType, cardValue, enumToArrayNumericValues } from './models';
+import { Component } from '@angular/core';
+import { Card } from './models';
 import { CardsHelper } from './cards-helper';
 
 @Component({
@@ -7,19 +7,10 @@ import { CardsHelper } from './cards-helper';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
   title = 'discard-solitaire';
   helper: CardsHelper = new CardsHelper();
-  public deck: Card[] = [];
-  public firstCardOfDeck: Card | undefined;
-  public test: any
-  ngOnInit(): void {
-    console.log('king is bigger then queen' , cardValue.king > cardValue.queen);
-    console.log(enumToArrayNumericValues(CardType).map((type:number) => enumToArrayNumericValues(cardValue).map((value:number) => ({ type, value}))).flat());
-    this.deck= this.helper.getDeck();
-    this.firstCardOfDeck =  { ...this.deck[0], isShown: true};
-    console.log(this.firstCardOfDeck.img)
-    this.test =  this.firstCardOfDeck.img;
-
-  }
+  public deck: Card[] = this.helper.getDeck();
+  public firstCardOfDeck = { ...this.deck[0], isShown: true};
+  public test =  this.firstCardOfDeck.img
 }
