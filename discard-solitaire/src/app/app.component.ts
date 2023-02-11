@@ -14,7 +14,10 @@ export class AppComponent implements OnInit {
   public firstCardOfDeck = { ...this.deck[0], isShown: true};
   public test =  this.firstCardOfDeck.img
   cardStacks: Card[][] = [[], [], [], []];
-
+  public firstCardImage;
+  public secondCardImage;
+  public thirdCardImage;
+  public fourthCardImage;
   public firstCard: any
 
   ngOnInit(): void {
@@ -22,23 +25,44 @@ export class AppComponent implements OnInit {
     this.dealFirstToStacks();
     this.dealToStacks();
     this.discard(this.cardStacks[0]);
+    console.log(this.cardStacks);
   }
 
-  private dealFirstToStacks(): void {
+  public dealFirstToStacks(): void {
     this.cardStacks = this.cardStacks.map(() => {
         return [{ ...this.deck.pop(), isShown: true }];
       }
     )
   };
 
-  private dealToStacks(): void {
-    this.cardStacks = this.cardStacks.map(stack => {
-        return [this.deck.pop(), ...stack];
-      }
-    )
+  public dealToStacks(): void {
+    this.cardStacks = this.cardStacks.map(stack => [this.deck.pop(), ...stack] );
+    this.updateTopCardImages();
   }
 
   public discard(stack: Card[]): void {
     stack.pop();
+  }
+
+  private updateTopCardImages() {
+    this.firstCardImage = this.cardStacks[0][0]?.img;
+    this.secondCardImage = this.cardStacks[1][0]?.img;
+    this.thirdCardImage = this.cardStacks[2][0]?.img;
+    this.fourthCardImage = this.cardStacks[3][0]?.img;
+
+  }
+
+  getImage(i) {
+    switch (i){
+      case 0:
+        return this.firstCardImage;
+      case 1:
+        return this.secondCardImage;
+      case 2:
+        return this.thirdCardImage;
+      case 3:
+        return this.fourthCardImage;
+    }
+
   }
 }

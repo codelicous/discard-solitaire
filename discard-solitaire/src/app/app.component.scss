@@ -7,3 +7,17 @@
 .card-image {
   height: 200px;
 }
+.deal-btn {
+  color: wheat;
+  border: solid 1px;
+  height: 20px;
+}
+.stack-container {
+  display: flex;
+  padding: 23px;
+  margin-left: auto;
+  .top-deck {
+    height: 200px;
+    margin-right: 8px;
+  }
+}
