@@ -15,7 +15,7 @@ export class AppComponent implements OnInit {
   public test: any
   ngOnInit(): void {
     console.log('king is bigger then queen' , cardValue.king > cardValue.queen);
-    console.log(enumToArrayNumericValues(CardType).map(type => enumToArrayNumericValues(cardValue).map(value => ({ type, value}))).flat());
+    console.log(enumToArrayNumericValues(CardType).map((type:number) => enumToArrayNumericValues(cardValue).map((value:number) => ({ type, value}))).flat());
     this.deck= this.helper.getDeck();
     this.firstCardOfDeck =  { ...this.deck[0], isShown: true};
     console.log(this.firstCardOfDeck.img)

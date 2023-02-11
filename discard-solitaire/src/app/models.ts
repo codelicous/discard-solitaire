@@ -27,12 +27,12 @@ export const cardValue = {
   queen : 12,
   king : 13
 }
-export function enumToArrayNumericValues<T>(enumObject: T): Array<T[keyof T]> {
-  return Object.values(enumObject).filter(v => !(typeof v === 'string'));
+export function enumToArrayNumericValues<T>(enumObject: T): any {
+  return Object.values(enumObject as any).filter(v => !(typeof v === 'string'));
 }
 
-export function enumToArrayKeys<T>(enumObject: T): Array<keyof T> {
-  return Object.values(enumObject).filter(v => typeof v === 'string');
+export function enumToArrayKeys<T>(enumObject: T): any {
+  return Object.values(enumObject as any).filter(v => typeof v === 'string');
 }
 
 export function calcRandomPosition() {

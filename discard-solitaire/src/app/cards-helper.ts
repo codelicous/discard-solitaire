@@ -10,7 +10,7 @@ export class CardsHelper {
   }
 
    private generateDeck(): Card[] {
-    return enumToArrayNumericValues(CardType).map(type => enumToArrayNumericValues(cardValue).map(value => ({
+    return enumToArrayNumericValues(CardType).map((type:number) => enumToArrayNumericValues(cardValue).map((value:number) => ({
       type,
       value,
       isShown: false,
