@@ -1,7 +1,9 @@
 <div class="deck"></div>
-<div  class="deal-btn" (click)="dealToStacks()"> Deal Button</div>
+<div class="deal-btn" (click)="dealToStacks()"> Deal Button</div>
 <div class="stack-container">
-  <div *ngFor="let stack of cardStacks let i =index">
+  <div class="card-stack" *ngFor="let stack of cardStacks let i =index">
+    <div *ngFor="let margin of cardStacks[i].slice(1)" class="card-margin">
+    </div>
     <img class="top-deck" [src]="getImage(i)">
   </div>
 </div>

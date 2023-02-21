@@ -13,7 +13,7 @@ export class AppComponent implements OnInit {
   public deck: Card[] = this.helper.getDeck();
   public firstCardOfDeck = { ...this.deck[0], isShown: true};
   public test =  this.firstCardOfDeck.img
-  cardStacks: Card[][] = [[], [], [], []];
+  public cardStacks: Card[][] = [[], [], [], []];
   public firstCardImage;
   public secondCardImage;
   public thirdCardImage;
@@ -22,10 +22,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.deck = this.helper.getDeck();
-    this.dealFirstToStacks();
     this.dealToStacks();
-    this.discard(this.cardStacks[0]);
-    console.log(this.cardStacks);
   }
 
   public dealFirstToStacks(): void {
@@ -36,6 +33,10 @@ export class AppComponent implements OnInit {
   };
 
   public dealToStacks(): void {
+    if (!this.deck.length) {
+      return;
+    }
+
     this.cardStacks = this.cardStacks.map(stack => [this.deck.pop(), ...stack] );
     this.updateTopCardImages();
   }

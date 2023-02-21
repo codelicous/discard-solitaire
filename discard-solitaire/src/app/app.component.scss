@@ -16,8 +16,20 @@
   display: flex;
   padding: 23px;
   margin-left: auto;
+  .card-stack {
+    margin-right: 8px;
+    .card-margin {
+      background-color: white;
+      height: 8px;
+      border-radius: 5px 5px 0 0;
+      border-top: 1px solid black;
+      margin-top: -4px;
+    }
+  }
   .top-deck {
     height: 200px;
-    margin-right: 8px;
+    transform: translateY(-5px);
+    border: black 1px solid;
+    border-radius: 5px;
   }
 }
