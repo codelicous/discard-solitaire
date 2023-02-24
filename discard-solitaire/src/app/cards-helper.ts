@@ -1,9 +1,17 @@
-import { calcRandomPosition, Card, CardType, cardValue, enumToArrayKeys, enumToArrayNumericValues } from './models';
+import {
+  calcRandomPosition,
+  Card,
+  CardType,
+  cardValue,
+  cardValueToCardName,
+  enumToArrayKeys,
+  enumToArrayNumericValues
+} from './models';
 
 
 export class CardsHelper {
 
-  private cardDeck: Card[];
+  private readonly cardDeck: Card[];
 
   constructor() {
     this.cardDeck = this.generateDeck();
@@ -21,8 +29,8 @@ export class CardsHelper {
   private shuffle(deck: Card[]): Card[] {
     let newDeck = new Array<Card>(52);
     deck.forEach((card, index) => {
-        let newPosition = this.getNewPosition(index, newDeck);
-        newDeck[newPosition] = card;
+      let newPosition = this.getNewPosition(index, newDeck);
+      newDeck[newPosition] = card;
     });
     return newDeck;
   }
@@ -30,7 +38,7 @@ export class CardsHelper {
   private getNewPosition(oldPosition: number, newDeck: Card[]): number {
     let newPosition = calcRandomPosition();
 
-    if((oldPosition === newPosition) || newDeck[newPosition]) {
+    if ((oldPosition === newPosition) || newDeck[newPosition]) {
       return this.getNewPosition(oldPosition, newDeck);
     }
     return newPosition;
@@ -40,7 +48,7 @@ export class CardsHelper {
     return this.shuffle(this.cardDeck);
   }
 
-  private static getImgPath(type: number, value: number ): string {
-    return `./assets/cards-images/${Object.keys(cardValue)[value -1]}_${enumToArrayKeys(CardType)[type].toLowerCase()}.png`;
+  private static getImgPath(type: any, value: number ): string {
+    return `./assets/cards-images/${cardValueToCardName[value]}_${enumToArrayKeys(CardType)[type].toLowerCase()}.png`;
   }
 }

@@ -1,8 +1,8 @@
+import * as _ from 'lodash';
 export interface Card {
   type: CardType;
   value: number;
   img: string;
-  isShown: boolean;
 }
 
 export enum CardType {
@@ -27,6 +27,8 @@ export const cardValue = {
   queen : 12,
   king : 13
 }
+export const cardValueToCardName = _.invert(cardValue);
+
 export function enumToArrayNumericValues<T>(enumObject: T): any {
   return Object.values(enumObject as any).filter(v => !(typeof v === 'string'));
 }
