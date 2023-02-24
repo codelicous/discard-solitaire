@@ -1,35 +1,39 @@
 <div class="deck"></div>
 
 <div class="stack-container">
-  <div class="deck-container"  (click)="dealToStacks()">
+  <div class="deck-container" (click)="dealToStacks()">
     <div *ngFor="let margin of deckMarginRep()" class="deck-card-margin">
     </div>
-    <ng-container *ngIf="deck.length; else emptyDeck">
-    <img class="deck-trigger" src="assets/cards-images/card_back.png" alt="empty-stack">
+    <ng-container *ngIf="deck.length">
+      <img class="deck-trigger" src="assets/cards-images/card_back.png" alt="empty-stack">
     </ng-container>
-    <ng-template #emptyDeck>
+    <div class="empty-stack-container" [class.visible]="!deck.length">
       <div
-        class="droplist-conatiner"
+        class="droplist-container"
         cdkDropList
         #emptyStack="cdkDropList"
         [cdkDropListData]="[]"
-        [cdkDropListConnectedTo]="[card]"
-        (cdkDropListDropped)="drop($event)"
-      ></div>
-      <div
-           class="empty-stack">stack empty</div>
-    </ng-template>
-  </div>
-  <div  class="card-stack" *ngFor="let stack of cardStacks let i =index" cdkDropList
-        #card="cdkDropList"
-        [cdkDropListData]="getImage(i)"
-        [cdkDropListConnectedTo]="[card]"
+        cdkDropListSortingDisabled
+        [cdkDropListDisabled]="!!movedCard"
         (cdkDropListDropped)="drop($event)">
-    <div *ngFor="let margin of cardStacks[i].slice(1)"  class="card-margin">
+        <div
+          class="empty-stack">stack empty
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="drop-list-container"
+       cdkDropList
+       cdkDropListSortingDisabled
+       [cdkDropListDisabled]="!!movedCard"
+       #card="cdkDropList">
+  <div class="card-stack" *ngFor="let stack of cardStacks let i =index"
+      >
+    <div *ngFor="let margin of cardStacks[i].slice(1)" class="card-margin">
     </div>
     <div cdkDrag
-     (cdkDragStarted)="shiftCard(i)"
-      (cdkDragEnded)="logEnded(i)">
+         (cdkDragStarted)="shiftCard(i)"
+         (cdkDragEnded)="logEnded(i)">
       <div class="example-custom-placeholder" *cdkDragPlaceholder>
         <ng-container class="drag-replacer-container">
           <ng-container *ngIf="movedCard">
@@ -40,10 +44,11 @@
           </ng-container>
         </ng-container>
       </div>
-    <img  class="top-deck"
-          [src]="getImage(i)"
-          (dblclick)="discardIfCan(i)"
-          alt="empty-stack">
+      <img class="top-deck"
+           [src]="getImage(i)"
+           (dblclick)="discardIfCan(i)"
+           alt="empty-stack">
     </div>
+  </div>
   </div>
 </div>

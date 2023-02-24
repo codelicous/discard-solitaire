@@ -21,7 +21,6 @@ export class AppComponent implements OnInit {
   public cardImage3;
   public firstCard: any
   private currentPresentedCards: Card[];
-  card: any;
   private movedIndex: number;
   public movedCard: Card;
 

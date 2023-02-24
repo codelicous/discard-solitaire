@@ -17,6 +17,16 @@ $card-border: 1px solid black;
   transform: translateY(-5px);
 }
 
+.drop-list-container {
+  display: flex;
+}
+.empty-stack-container {
+  display: none;
+  &.visible {
+    display: flex;
+  }
+}
+
 .card-margin, .deck-card-margin {
   background-color: white;
   height: 8px;
