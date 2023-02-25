@@ -9,46 +9,45 @@
     </ng-container>
     <div class="empty-stack-container" [class.visible]="!deck.length">
       <div
-        class="droplist-container"
-        cdkDropList
-        #emptyStack="cdkDropList"
-        [cdkDropListData]="[]"
-        cdkDropListSortingDisabled
-        [cdkDropListDisabled]="!!movedCard"
-        (cdkDropListDropped)="drop($event)">
-        <div
-          class="empty-stack">stack empty
-        </div>
+        class="empty-stack">stack empty
       </div>
     </div>
   </div>
-  <div class="drop-list-container"
-       cdkDropList
-       cdkDropListSortingDisabled
-       [cdkDropListDisabled]="!!movedCard"
-       #card="cdkDropList">
-  <div class="card-stack" *ngFor="let stack of cardStacks let i =index"
-      >
-    <div *ngFor="let margin of cardStacks[i].slice(1)" class="card-margin">
-    </div>
-    <div cdkDrag
-         (cdkDragStarted)="shiftCard(i)"
-         (cdkDragEnded)="logEnded(i)">
-      <div class="example-custom-placeholder" *cdkDragPlaceholder>
-        <ng-container class="drag-replacer-container">
-          <ng-container *ngIf="movedCard">
-            <img
-              class="card-behind-image"
-              [src]="getImageOfCardBehind(i)"
-            >
+  <div class="drop-list-container">
+    <div class="card-stack" *ngFor="let stack of cardStacks let i =index; trackBy: trackByIdentity"
+         id="drop-list_{{i}}"
+         cdkDropList
+         cdkDropListSortingDisabled
+         (cdkDropListDropped)="drop($event,i)"
+         [cdkDropListData]="i"
+         [cdkDropListEnterPredicate]="canEnterDropList.bind(this, i)"
+         [cdkDropListConnectedTo]="getConnectedToDropLists(i)"
+    >
+      <div *ngFor="let margin of cardStacks[i].slice(1)" #cardMargins class="card-margin stack-num-{{i}}">
+      </div>
+      <div cdkDrag
+           (cdkDragStarted)="shiftCard($event,i)"
+           >
+        <div class="example-custom-placeholder" *cdkDragPlaceholder>
+          <ng-container class="drag-replacer-container">
+            <ng-container *ngIf="movedCard">
+              <img
+                class="card-behind-image"
+                [src]="getImageOfCardBehind(i)"
+              >
+            </ng-container>
           </ng-container>
-        </ng-container>
+        </div>
+        <img class="top-deck"
+             #cardStack
+             src="{{cardStacks[i][0]?.img}}"
+             width="200"
+             height="200"
+             (click)="triggerAction($event, i)"
+             (dblclick)="discardIfCan($event, i)"
+             alt="empty-stack">
+        <div>{{cardStacks[i][0] |json}}</div>
       </div>
-      <img class="top-deck"
-           [src]="getImage(i)"
-           (dblclick)="discardIfCan(i)"
-           alt="empty-stack">
     </div>
-  </div>
   </div>
 </div>

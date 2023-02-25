@@ -11,6 +11,9 @@ export enum CardType {
   Club,
   Diamond
 }
+export enum UtilClasses {
+  Marked = 'marked'
+}
 
 export const cardValue = {
   ace : 1,

@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { Card } from './models';
+import { ChangeDetectorRef, Component, ElementRef, OnInit, QueryList, Renderer2, ViewChildren } from '@angular/core';
+import { Card, UtilClasses } from './models';
 import { CardsHelper } from './cards-helper';
-import { CdkDragDrop } from '@angular/cdk/drag-drop';
+import { CdkDrag, CdkDragDrop, CdkDragStart, CdkDropList, transferArrayItem } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-root',
@@ -9,7 +9,9 @@ import { CdkDragDrop } from '@angular/cdk/drag-drop';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  title = 'discard-solitaire';
+  @ViewChildren('cardStack') cardStackRefs: QueryList<ElementRef>;
+  @ViewChildren('cardMargins') cardMarginsRefs: QueryList<ElementRef>;
+  public title = 'discard-solitaire';
   helper: CardsHelper = new CardsHelper();
   public deck: Card[] = this.helper.getDeck();
   public firstCardOfDeck = { ...this.deck[0], isShown: true};
@@ -20,10 +22,13 @@ export class AppComponent implements OnInit {
   public cardImage2;
   public cardImage3;
   public firstCard: any
+  public trackByIdentity = (index: number, item: any) => item;
   private currentPresentedCards: Card[];
   private movedIndex: number;
   public movedCard: Card;
 
+  constructor(private renderer: Renderer2, private cdr: ChangeDetectorRef) {
+  }
   ngOnInit(): void {
     this.deck = this.helper.getDeck();
     this.dealToStacks();
@@ -60,10 +65,6 @@ export class AppComponent implements OnInit {
 
   }
 
-  getImage(i) {
-   return this[`cardImage${i}`];
-  }
-
    public getImageOfCardBehind(index): string {
    return   this.cardStacks[index][0]?.img;
   }
@@ -72,7 +73,8 @@ export class AppComponent implements OnInit {
     return this.deck.length >= 3 ? [1,2] : this.deck.length > 1 ?  [1] : [];
   }
 
-  public discardIfCan(i: number) {
+  public discardIfCan($event: MouseEvent,i: number) {
+    this.renderer.removeClass($event.target, UtilClasses.Marked);
     if(this.canDiscard(i)){
       this.cardStacks[i].shift();
       this.updateCardImageAfterDiscard(i);
@@ -84,7 +86,7 @@ export class AppComponent implements OnInit {
     if (!currentCard) {
       return false;
     }
-    const otherCards = this.currentPresentedCards.filter(card => card?.img !== currentCard.img);
+    const otherCards = this.cardStacks.map(stack => stack[0]).filter(card => card?.img !== currentCard.img);
     return this.hasHigherCardSameType(currentCard, otherCards);
   }
 
@@ -97,20 +99,72 @@ export class AppComponent implements OnInit {
       this.currentPresentedCards[i] = this.cardStacks[i][0];
   }
 
-   public drop($event: CdkDragDrop<any, any>) {
+  public drop($event: CdkDragDrop<any, any>, i: number) {
+    if ($event.previousContainer === $event.container) {
+      this.endDrag(i);
+      return;
+    }
+    console.log(this.cardStacks);
+    this.cardStacks[$event.container.data].unshift(this.movedCard);
+    this.movedCard = null;
+    this.unMarkAllCards();
+    transferArrayItem(
+      $event.previousContainer.data,
+      $event.container.data,
+      $event.previousIndex,
+      $event.currentIndex,
+    );
+    this.cardStacks= [... this.cardStacks];
+    this.currentPresentedCards[i] = this.cardStacks[i][0];
   }
 
-   public shiftCard(i: number) {
-     console.log(this.cardStacks[i].map(card => card.img));
-     console.log('drag started')
+  public canEnterDropList( i: number, drag: CdkDrag, drop: CdkDropList): boolean {
+    return !this.cardStacks[i].length;
+  }
+
+  public shiftCard($event: CdkDragStart, i: number): void {
+    const element = $event.event.target as HTMLElement;
+    if (!element.classList.contains(UtilClasses.Marked)) {
+        this.markElement(element, i);
+    }
+
     this.movedIndex = i;
     this.movedCard = this.cardStacks[i].shift();
-     console.log(this.cardStacks[i].map(card => card.img));
-
   }
 
-  logEnded(i: number) {
+  public endDrag(i: number) {
     this.cardStacks[i].unshift(this.movedCard);
     this.movedCard = null;
+    this.unMarkAllCards();
+  }
+
+  public triggerAction($event: MouseEvent, i: number): void {
+    if (($event.target as HTMLElement).classList.contains(UtilClasses.Marked)) {
+      this.discardIfCan($event, i);
+      return;
+    }
+    this.markElement($event.target as HTMLElement, i)
+  }
+
+  public unMarkAllCards(): void {
+    [...this.cardStackRefs, ...this.cardMarginsRefs].forEach(ref => this.renderer.removeClass(ref.nativeElement, UtilClasses.Marked));
+  }
+
+  public getConnectedToDropLists(i: number) {
+    return this.cardStacks.map((val, index)=>{
+      if(index === i) {
+        return null;
+      }
+      return `drop-list_${index}`;
+    }).filter(val => !!val);
+  }
+
+  private markElement(element: HTMLElement,i: number): void {
+    this.unMarkAllCards();
+    const cardMargin = this.cardMarginsRefs.filter(ref => ref.nativeElement.classList.contains(`stack-num-${ i }`)).pop();
+
+    cardMargin && this.renderer.addClass(cardMargin.nativeElement,UtilClasses.Marked);
+    this.renderer.addClass(element, UtilClasses.Marked);
+    console.log(element.classList);
   }
 }
