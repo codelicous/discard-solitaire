@@ -44,3 +44,8 @@ export function calcRandomPosition(): number {
   return  Math.floor(Math.random() * (52));
 }
 
+export interface GameState {
+  deck: Card[][];
+  cardStacks:  Card[][][];
+  moveState: number;
+}
