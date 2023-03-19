@@ -1,7 +1,19 @@
-import { ChangeDetectorRef, Component, ElementRef, OnInit, QueryList, Renderer2, ViewChildren } from '@angular/core';
+import { Component,
+         ElementRef,
+         OnInit,
+         QueryList,
+         Renderer2,
+         ViewChildren
+        } from '@angular/core';
 import { Card, UtilClasses } from './models';
 import { CardsHelper } from './cards-helper';
-import { CdkDrag, CdkDragDrop, CdkDragStart, CdkDropList, transferArrayItem } from '@angular/cdk/drag-drop';
+import {
+         CdkDragDrop,
+         CdkDragExit,
+         CdkDragStart,
+        transferArrayItem
+        }
+  from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-root',
@@ -21,32 +33,37 @@ export class AppComponent implements OnInit {
   public cardImage1;
   public cardImage2;
   public cardImage3;
-  public firstCard: any
   public trackByIdentity = (index: number, item: any) => item;
   private currentPresentedCards: Card[];
-  private movedIndex: number;
+  public movedIndex: number;
   public movedCard: Card;
 
-  constructor(private renderer: Renderer2, private cdr: ChangeDetectorRef) {
+  constructor(private renderer: Renderer2) {
   }
   ngOnInit(): void {
     this.deck = this.helper.getDeck();
-    this.dealToStacks();
+    this.dealToStacks(true);
   }
 
-  public dealFirstToStacks(): void {
-    this.cardStacks = this.cardStacks.map(() => {
-        return [{ ...this.deck.pop(), isShown: true }];
-      }
-    )
-  };
 
-  public dealToStacks(): void {
+  public dealToStacks(initialDeal?: boolean): void {
     if (!this.deck.length) {
       return;
     }
 
-    this.cardStacks = this.cardStacks.map(stack => [this.deck.pop(), ...stack] );
+    if (this.hasEmptyStack() && !initialDeal) {
+      if (this.noCardToFillEmptyStack()) {
+        this.fillEmptyStacks();
+        return;
+      } else {
+        return;
+      }
+    }
+
+    this.cardStacks = this.cardStacks.map(stack => {
+      return this.deck.length && [this.deck.pop(), ...stack] || stack;
+    });
+
     this.updateTopCardImages();
   }
 
@@ -63,10 +80,6 @@ export class AppComponent implements OnInit {
       this.cardStacks[1][0], this.cardStacks[2][0], this.cardStacks[3][0]];
 
 
-  }
-
-   public getImageOfCardBehind(index): string {
-   return   this.cardStacks[index][0]?.img;
   }
 
   public deckMarginRep(): any[] {
@@ -87,7 +100,8 @@ export class AppComponent implements OnInit {
       return false;
     }
     const otherCards = this.cardStacks.map(stack => stack[0]).filter(card => card?.img !== currentCard.img);
-    return this.hasHigherCardSameType(currentCard, otherCards);
+    return this.hasHigherCardSameType(currentCard, otherCards) ||
+      this.cardBehindSameKindHigher(this.cardStacks[i]);
   }
 
   private hasHigherCardSameType(currentCard: Card, otherCards: Card[]): boolean {
@@ -100,11 +114,11 @@ export class AppComponent implements OnInit {
   }
 
   public drop($event: CdkDragDrop<any, any>, i: number) {
+    this.movedIndex = null;
     if ($event.previousContainer === $event.container) {
       this.endDrag(i);
       return;
     }
-    console.log(this.cardStacks);
     this.cardStacks[$event.container.data].unshift(this.movedCard);
     this.movedCard = null;
     this.unMarkAllCards();
@@ -118,11 +132,12 @@ export class AppComponent implements OnInit {
     this.currentPresentedCards[i] = this.cardStacks[i][0];
   }
 
-  public canEnterDropList( i: number, drag: CdkDrag, drop: CdkDropList): boolean {
-    return !this.cardStacks[i].length;
+  public canEnterDropList( i: number): boolean {
+    return !this.cardStacks[i].length && (i !== this.movedIndex);
   }
 
   public shiftCard($event: CdkDragStart, i: number): void {
+    this.movedIndex = i;
     const element = $event.event.target as HTMLElement;
     if (!element.classList.contains(UtilClasses.Marked)) {
         this.markElement(element, i);
@@ -165,6 +180,40 @@ export class AppComponent implements OnInit {
 
     cardMargin && this.renderer.addClass(cardMargin.nativeElement,UtilClasses.Marked);
     this.renderer.addClass(element, UtilClasses.Marked);
-    console.log(element.classList);
+  }
+
+  onHoverEnter($event , i: number) {
+    if(this.movedIndex === i) {
+      return
+    }
+
+    this.renderer.addClass($event.container.element.nativeElement?.querySelector('.top-deck'), 'hide');
+  }
+
+  onHoverExited($event: CdkDragExit<number>, i: number) {
+    if(this.movedIndex  === i) {
+      return
+    }
+    this.renderer.removeClass($event.container.element.nativeElement?.querySelector('.top-deck'), 'hide');
+  }
+
+  private cardBehindSameKindHigher( cardStack: Card[]): boolean {
+    const  currentCard = cardStack[0];
+    const comparedToCard = cardStack[1];
+    return currentCard.type === comparedToCard.type && currentCard.value < comparedToCard.value;
+  }
+
+  private hasEmptyStack(): boolean {
+    return this.cardStacks.some(stack => stack.length === 0);
+  }
+
+  private fillEmptyStacks(): void {
+    this.cardStacks.forEach(stack => {
+      console.log(this.deck.length);
+      stack.length === 0 && this.deck.length && stack.push(this.deck.pop());
+    })
+  }
+  private noCardToFillEmptyStack(): boolean {
+    return this.cardStacks.every(stack => stack.length <= 1);
   }
 }

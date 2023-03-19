@@ -19,34 +19,40 @@
          cdkDropList
          cdkDropListSortingDisabled
          (cdkDropListDropped)="drop($event,i)"
+         (cdkDropListEntered)="onHoverEnter($event,i)"
+         (cdkDropListExited)="onHoverExited($event,i)"
          [cdkDropListData]="i"
          [cdkDropListEnterPredicate]="canEnterDropList.bind(this, i)"
          [cdkDropListConnectedTo]="getConnectedToDropLists(i)"
     >
+      <ng-container *ngIf="cardStacks[i]">
       <div *ngFor="let margin of cardStacks[i].slice(1)" #cardMargins class="card-margin stack-num-{{i}}">
       </div>
-      <div cdkDrag
-           (cdkDragStarted)="shiftCard($event,i)"
-           >
-        <div class="example-custom-placeholder" *cdkDragPlaceholder>
-          <ng-container class="drag-replacer-container">
-            <ng-container *ngIf="movedCard">
-              <img
-                class="card-behind-image"
-                [src]="getImageOfCardBehind(i)"
-              >
-            </ng-container>
-          </ng-container>
-        </div>
+      </ng-container>
+      <div cdkDrag (cdkDragStarted)="shiftCard($event,i)">
         <img class="top-deck"
+             *ngIf="cardStacks[i][0] && !(movedIndex === i) "
              #cardStack
              src="{{cardStacks[i][0]?.img}}"
              width="200"
              height="200"
              (click)="triggerAction($event, i)"
-             (dblclick)="discardIfCan($event, i)"
              alt="empty-stack">
-        <div>{{cardStacks[i][0] |json}}</div>
+        <div class="top-deck"
+             *ngIf="!cardStacks[i][0] || movedIndex === i">
+        </div>
+        <div>{{cardStacks[i] |json}}</div>
+      </div>
+      <div *ngIf="movedIndex === i">
+        <div class="replacer">
+          <div *ngFor="let margin of cardStacks[i]"
+               class="card-margin replacer-margin  stack-num-{{i}}">
+          </div>
+        <img
+          *ngIf="cardStacks[i][0]"
+          class="replacer-image"
+          src="{{cardStacks[i][0]?.img}}" alt="vafsa">
+      </div>
       </div>
     </div>
   </div>

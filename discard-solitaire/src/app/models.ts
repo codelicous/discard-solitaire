@@ -40,7 +40,7 @@ export function enumToArrayKeys<T>(enumObject: T): any {
   return Object.values(enumObject as any).filter(v => typeof v === 'string');
 }
 
-export function calcRandomPosition() {
-  return Math.floor(Math.random() * (52))
+export function calcRandomPosition(): number {
+  return  Math.floor(Math.random() * (52));
 }
 

@@ -38,7 +38,7 @@ export class CardsHelper {
   private getNewPosition(oldPosition: number, newDeck: Card[]): number {
     let newPosition = calcRandomPosition();
 
-    if ((oldPosition === newPosition) || newDeck[newPosition]) {
+    if (oldPosition && newPosition && (oldPosition === newPosition) || newDeck[newPosition]) {
       return this.getNewPosition(oldPosition, newDeck);
     }
     return newPosition;
