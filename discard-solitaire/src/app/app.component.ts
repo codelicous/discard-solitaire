@@ -9,15 +9,16 @@ import {
   ViewChildren
 } from '@angular/core';
 import {Card, GameState, UtilClasses} from './models';
-import { CardsHelper } from './cards-helper';
+import {CardsHelper} from './cards-helper';
 import {
-         CdkDragDrop,
-         CdkDragExit,
-         CdkDragStart,
-        transferArrayItem
-        }
+  CdkDragDrop,
+  CdkDragExit,
+  CdkDragStart,
+  transferArrayItem
+}
   from '@angular/cdk/drag-drop';
 import _ from 'lodash';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -29,14 +30,20 @@ export class AppComponent implements OnInit {
 
   @HostListener('document:keypress', ['$event'])
   public onKeyPress(event: KeyboardEvent) {
+    if(event.key === 'Z' && event.ctrlKey && event.shiftKey) {
+      this.reDoState();
+      return;
+    }
+
     if (event.key === 'z' && event.ctrlKey === true) {
       this.undoGameState();
     }
   }
+
   public title = 'discard-solitaire';
   helper: CardsHelper = new CardsHelper();
   public deck: Card[] = this.helper.getDeck();
-  public firstCardOfDeck = { ...this.deck[0], isShown: true};
+  public undoNumber = 0;
   public cardStacks: Card[][] = [[], [], [], []];
   public cardImage0;
   public cardImage1;
@@ -46,7 +53,7 @@ export class AppComponent implements OnInit {
   public trackByIdentity = (index: number, item: any) => item;
   private gameState: GameState = {
     deck: [],
-    cardStacks:[],
+    cardStacks: [],
     moveState: 0
   }
   public movedIndex: number;
@@ -54,6 +61,7 @@ export class AppComponent implements OnInit {
 
   constructor(private renderer: Renderer2, private changeDetectorRef: ChangeDetectorRef) {
   }
+
   ngOnInit(): void {
     this.deck = this.helper.getDeck();
     this.dealToStacks(true);
@@ -94,12 +102,12 @@ export class AppComponent implements OnInit {
   }
 
   public deckMarginRep(): any[] {
-    return this.deck.length >= 3 ? [1,2] : this.deck.length > 1 ?  [1] : [];
+    return this.deck.length >= 3 ? [1, 2] : this.deck.length > 1 ? [1] : [];
   }
 
-  public discardIfCan($event: MouseEvent,i: number) {
+  public discardIfCan($event: MouseEvent, i: number) {
     this.renderer.removeClass($event.target, UtilClasses.Marked);
-    if(this.canDiscard(i)){
+    if (this.canDiscard(i)) {
       this.cardStacks[i].shift();
       this.updateCardImageAfterDiscard(i);
       this.updateGameState();
@@ -121,7 +129,7 @@ export class AppComponent implements OnInit {
   }
 
   private updateCardImageAfterDiscard(i: number) {
-      this[`cardImage${i}`] = this.cardStacks[i][0]?.img;
+    this[`cardImage${i}`] = this.cardStacks[i][0]?.img;
   }
 
   public drop($event: CdkDragDrop<any, any>, i: number) {
@@ -139,10 +147,10 @@ export class AppComponent implements OnInit {
       $event.previousIndex,
       $event.currentIndex,
     );
-    this.cardStacks= [... this.cardStacks];
+    this.cardStacks = [...this.cardStacks];
   }
 
-  public canEnterDropList( i: number): boolean {
+  public canEnterDropList(i: number): boolean {
     return !this.cardStacks[i].length && (i !== this.movedIndex);
   }
 
@@ -150,7 +158,7 @@ export class AppComponent implements OnInit {
     this.movedIndex = i;
     const element = $event.event.target as HTMLElement;
     if (!element.classList.contains(UtilClasses.Marked)) {
-        this.markElement(element, i);
+      this.markElement(element, i);
     }
 
     this.movedIndex = i;
@@ -176,24 +184,24 @@ export class AppComponent implements OnInit {
   }
 
   public getConnectedToDropLists(i: number) {
-    return this.cardStacks.map((val, index)=>{
-      if(index === i) {
+    return this.cardStacks.map((val, index) => {
+      if (index === i) {
         return null;
       }
       return `drop-list_${index}`;
     }).filter(val => !!val);
   }
 
-  private markElement(element: HTMLElement,i: number): void {
+  private markElement(element: HTMLElement, i: number): void {
     this.unMarkAllCards();
-    const cardMargin = this.cardMarginsRefs.filter(ref => ref.nativeElement.classList.contains(`stack-num-${ i }`)).pop();
+    const cardMargin = this.cardMarginsRefs.filter(ref => ref.nativeElement.classList.contains(`stack-num-${i}`)).pop();
 
-    cardMargin && this.renderer.addClass(cardMargin.nativeElement,UtilClasses.Marked);
+    cardMargin && this.renderer.addClass(cardMargin.nativeElement, UtilClasses.Marked);
     this.renderer.addClass(element, UtilClasses.Marked);
   }
 
-  onHoverEnter($event , i: number) {
-    if(this.movedIndex === i) {
+  onHoverEnter($event, i: number) {
+    if (this.movedIndex === i) {
       return
     }
 
@@ -201,14 +209,14 @@ export class AppComponent implements OnInit {
   }
 
   onHoverExited($event: CdkDragExit<number>, i: number) {
-    if(this.movedIndex  === i) {
+    if (this.movedIndex === i) {
       return
     }
     this.renderer.removeClass($event.container.element.nativeElement?.querySelector('.top-deck'), 'hide');
   }
 
-  private cardBehindSameKindHigher( cardStack: Card[]): boolean {
-    const  currentCard = cardStack[0];
+  private cardBehindSameKindHigher(cardStack: Card[]): boolean {
+    const currentCard = cardStack[0];
     const comparedToCard = cardStack[1];
     return currentCard.type === comparedToCard.type && currentCard.value < comparedToCard.value;
   }
@@ -222,6 +230,7 @@ export class AppComponent implements OnInit {
       stack.length === 0 && this.deck.length && stack.push(this.deck.pop());
     })
   }
+
   private noCardToFillEmptyStack(): boolean {
     return this.cardStacks.every(stack => stack.length <= 1);
   }
@@ -229,14 +238,31 @@ export class AppComponent implements OnInit {
   private updateGameState(): void {
     this.gameState.deck.push(_.cloneDeep(this.deck));
     this.gameState.cardStacks.push(_.cloneDeep(this.cardStacks));
-    this.gameState.moveState +=1;
+    this.gameState.moveState += 1;
   }
 
   private undoGameState(): void {
+    if (this.undoNumber == 5) {
+      return;
+    }
+
     this.deck = this.gameState.deck[this.gameState.moveState - 2];
-    this.cardStacks = this.gameState.cardStacks[this.gameState.moveState -2];
-    this.gameState.moveState -=1;
+    this.cardStacks = this.gameState.cardStacks[this.gameState.moveState - 2];
+    this.gameState.moveState -= 1;
     this.updateTopCardImages();
     this.changeDetectorRef.detectChanges();
+    this.undoNumber += 1;
+  }
+
+  private reDoState(): void {
+    if(!this.undoNumber) {
+      return;
+    }
+    this.deck = this.gameState.deck[this.gameState.moveState];
+    this.cardStacks = this.gameState.cardStacks[this.gameState.moveState];
+    this.gameState.moveState += 1;
+    this.updateTopCardImages();
+    this.changeDetectorRef.detectChanges();
+    this.undoNumber -= 1;
   }
 }
