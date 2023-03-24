@@ -1,0 +1,45 @@
+$card-height: 200px;
+$card-width: 143px;
+$card-border: 1px solid black;
+
+:host {
+  display: flex;
+  height: 100%;
+  background-color: #008300;
+  flex: 1;
+  position: relative;
+}
+
+
+
+.empty-stack-container {
+  display: none;
+  &.visible {
+    display: flex;
+  }
+}
+
+
+.deck-trigger {
+  display: flex;
+  height: $card-height;
+  width: $card-width;
+  transform: translateY(-5px);
+  border: $card-border;
+  border-radius: 5px;
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+.stack-container {
+  display: flex;
+  padding: 23px;
+  flex: 1;
+  margin-left: auto;
+  .deck-container {
+    margin-right: auto;
+  }
+
+
+}
+

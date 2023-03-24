@@ -1,0 +1,79 @@
+$card-height: 200px;
+$card-width: 143px;
+$card-border: 1px solid black;
+
+.drop-list-container {
+  display: flex;
+  position: relative;
+}
+
+.card-image, .empty-stack, .top-deck, .card-behind-image, .card-stack, .replacer-image {
+  height: $card-height;
+  width: $card-width;
+  border-radius: 5px;
+  user-select: none;
+  &.marked {
+    opacity: 0.7
+  }
+}
+.card-margin, .deck-card-margin {
+  background-color: white;
+  height: 8px;
+  border-radius: 5px 5px 0 0;
+  border-top: $card-border;
+  margin-top: -4px;
+  &.marked {
+    clip-path: inset(0px 0px 4px 0px);
+  }
+}
+.card-stack {
+  margin-right: 8px;
+}
+
+.card-behind-image {
+  border: $card-border;
+  transform: translateY(-5px);
+}
+.cdk-drag-placeholder {
+  opacity: 0;
+  height: 0;
+}
+
+.replacer-image {
+  border-radius: 5px;
+}
+
+.replacer-margin {
+  transform: translateY(4px);
+}
+
+.replacer {
+  position: absolute;
+  top: 0;
+  height: $card-height;
+  width: $card-width;
+  border: $card-border;
+  transform: translateY(-5px);
+  border-radius: 5px;
+}
+.card-margin, .deck-card-margin {
+  background-color: white;
+  height: 8px;
+  border-radius: 5px 5px 0 0;
+  border-top: $card-border;
+  margin-top: -4px;
+  &.marked {
+    clip-path: inset(0px 0px 4px 0px);
+  }
+}
+
+.top-deck {
+  display: flex;
+  height: $card-height;
+  width: $card-width;
+  transform: translateY(-5px);
+  border: $card-border;
+  &.hide {
+    display: none;
+  }
+}
