@@ -12,18 +12,19 @@ import {Card, GameState, UtilClasses} from "../models";
 
 import _ from 'lodash';
 import {CdkDragDrop, CdkDragExit, CdkDragStart, transferArrayItem} from "@angular/cdk/drag-drop";
+
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
-export class DashboardComponent implements OnInit{
+export class DashboardComponent implements OnInit {
   @ViewChildren('cardStack') cardStackRefs: QueryList<ElementRef>;
   @ViewChildren('cardMargins') cardMarginsRefs: QueryList<ElementRef>;
 
   @HostListener('document:keypress', ['$event'])
   public onKeyPress(event: KeyboardEvent) {
-    if(event.key === 'Z' && event.ctrlKey && event.shiftKey) {
+    if (event.key === 'Z' && event.ctrlKey && event.shiftKey) {
       this.reDoState();
       return;
     }
@@ -127,8 +128,8 @@ export class DashboardComponent implements OnInit{
 
   private updateCardImageAfterDiscard(i: number) {
     this[`cardImage${i}`] = this.cardStacks[i][0]?.img;
-    this.discarded ++;
-    this.discardedBeforeDeal ++;
+    this.discarded++;
+    this.discardedBeforeDeal++;
   }
 
   public drop($event: CdkDragDrop<any, any>, i: number) {
@@ -150,11 +151,12 @@ export class DashboardComponent implements OnInit{
   }
 
 
-  public cardsLeft(): number{
+  public cardsLeft(): number {
     return this.cardStacks
       .map(stack => stack.length)
       .reduce((previousValue, currentValue, currentIndex, array) => previousValue + currentValue, 0);
   }
+
   public shiftCard($event: CdkDragStart, i: number): void {
     this.movedIndex = i;
     const element = $event.event.target as HTMLElement;
@@ -242,7 +244,7 @@ export class DashboardComponent implements OnInit{
     this.gameState.moveState += 1;
   }
 
-  private undoGameState(): void {
+  public undoGameState(): void {
     if (this.undoNumber == 5) {
       return;
     }
@@ -255,8 +257,8 @@ export class DashboardComponent implements OnInit{
     this.undoNumber += 1;
   }
 
-  private reDoState(): void {
-    if(!this.undoNumber) {
+  public reDoState(): void {
+    if (!this.undoNumber) {
       return;
     }
     this.deck = this.gameState.deck[this.gameState.moveState];
@@ -265,5 +267,24 @@ export class DashboardComponent implements OnInit{
     this.updateTopCardImages();
     this.changeDetectorRef.detectChanges();
     this.undoNumber -= 1;
+  }
+
+  public resetGame(): void {
+    this.gameState = {
+      deck: [],
+      cardStacks: [],
+      moveState: 0
+    };
+    this.discarded = 0;
+    this.undoNumber = 0;
+    this.cardStacks = [[], [], [], []];
+    this.cardImage1 = null;
+    this.cardImage0 = null;
+    this.cardImage3 = null;
+    this.cardImage2 = null;
+    this.movedCard = null;
+    this.changeDetectorRef.detectChanges();
+    this.deck = this.helper.getDeck();
+    this.dealToStacks(true);
   }
 }

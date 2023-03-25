@@ -1,0 +1,19 @@
+:host {
+  display: flex;
+  margin-top: 15px;
+  border: solid 1px black;
+  padding: 5px 10px;
+}
+.material-icons {
+  &:hover {
+    cursor: pointer;
+  }
+}
+.action-container {
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+  .action-description {
+    margin-right: 5px;
+  }
+}
