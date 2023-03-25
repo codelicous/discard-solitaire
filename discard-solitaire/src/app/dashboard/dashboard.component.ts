@@ -37,6 +37,7 @@ export class DashboardComponent implements OnInit{
   helper: CardsHelper = new CardsHelper();
   public deck: Card[] = this.helper.getDeck();
   public undoNumber = 0;
+  public discarded = 0;
   public cardStacks: Card[][] = [[], [], [], []];
   public cardImage0;
   public cardImage1;
@@ -50,6 +51,7 @@ export class DashboardComponent implements OnInit{
     moveState: 0
   }
   public movedIndex: number;
+  public discardedBeforeDeal = 0;
   public movedCard: Card;
 
   constructor(private renderer: Renderer2, private changeDetectorRef: ChangeDetectorRef) {
@@ -70,6 +72,7 @@ export class DashboardComponent implements OnInit{
       if (this.noCardToFillEmptyStack()) {
         this.fillEmptyStacks();
         this.updateGameState();
+        this.discardedBeforeDeal = 0;
         return;
       } else {
         return;
@@ -81,6 +84,7 @@ export class DashboardComponent implements OnInit{
     });
     this.updateTopCardImages();
     this.updateGameState();
+    this.discardedBeforeDeal = 0;
   }
 
   public discard(stack: Card[]): void {
@@ -123,6 +127,8 @@ export class DashboardComponent implements OnInit{
 
   private updateCardImageAfterDiscard(i: number) {
     this[`cardImage${i}`] = this.cardStacks[i][0]?.img;
+    this.discarded ++;
+    this.discardedBeforeDeal ++;
   }
 
   public drop($event: CdkDragDrop<any, any>, i: number) {
@@ -143,10 +149,12 @@ export class DashboardComponent implements OnInit{
     this.cardStacks = [...this.cardStacks];
   }
 
-  public canEnterDropList(i: number): boolean {
-    return !this.cardStacks[i].length && (i !== this.movedIndex);
-  }
 
+  public cardsLeft(): number{
+    return this.cardStacks
+      .map(stack => stack.length)
+      .reduce((previousValue, currentValue, currentIndex, array) => previousValue + currentValue, 0);
+  }
   public shiftCard($event: CdkDragStart, i: number): void {
     this.movedIndex = i;
     const element = $event.event.target as HTMLElement;
@@ -211,7 +219,7 @@ export class DashboardComponent implements OnInit{
   private cardBehindSameKindHigher(cardStack: Card[]): boolean {
     const currentCard = cardStack[0];
     const comparedToCard = cardStack[1];
-    return currentCard.type === comparedToCard.type && currentCard.value < comparedToCard.value;
+    return currentCard.type === comparedToCard?.type && currentCard.value < comparedToCard?.value;
   }
 
   private hasEmptyStack(): boolean {

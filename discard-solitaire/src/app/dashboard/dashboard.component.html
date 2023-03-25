@@ -1,5 +1,3 @@
-<div class="deck"></div>
-
 <div class="stack-container">
   <div class="deck-container" (click)="dealToStacks()">
     <div *ngFor="let margin of deckMarginRep()" class="deck-card-margin">
@@ -12,6 +10,13 @@
         class="empty-stack">stack empty
       </div>
     </div>
+
+    <app-info-box
+      [discarded]="discarded"
+      [cardsLeft]="cardsLeft()"
+      [largestRunSetter]="discardedBeforeDeal">
+    </app-info-box>
+
   </div>
   <app-card-stacks
     [cardStacks]="cardStacks"

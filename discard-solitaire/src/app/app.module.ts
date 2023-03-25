@@ -6,12 +6,14 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CommonModule } from '@angular/common';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { CardStacksComponent } from './dashboard/card-stacks/card-stacks.component';
+import { InfoBoxComponent } from './dashboard/info-box/info-box.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     DashboardComponent,
-    CardStacksComponent
+    CardStacksComponent,
+    InfoBoxComponent
   ],
   imports: [
     BrowserModule,

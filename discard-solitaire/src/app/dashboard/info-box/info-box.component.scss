@@ -1,0 +1,19 @@
+:host {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  margin-top: 15px;
+  .row {
+    display: flex;
+    font-size: 18px;
+    font-weight: bold;
+    .value {
+      margin-left: 5px;
+    }
+  }
+}
