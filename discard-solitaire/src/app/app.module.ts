@@ -8,6 +8,17 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { CardStacksComponent } from './dashboard/card-stacks/card-stacks.component';
 import { InfoBoxComponent } from './dashboard/info-box/info-box.component';
 import { GameControllerComponent } from './dashboard/game-controller/game-controller.component';
+import { GameMenuComponent } from './game-menu/game-menu.component';
+import {RouterModule, Routes} from "@angular/router";
+import { HowToPlayComponent } from './how-to-play/how-to-play.component';
+
+
+const routes: Routes = [
+  { path: '', component: GameMenuComponent },
+  { path: 'home', component: GameMenuComponent},
+  { path: 'game', component: DashboardComponent },
+  { path: 'how-to-play', component: HowToPlayComponent },
+];
 
 @NgModule({
   declarations: [
@@ -15,13 +26,16 @@ import { GameControllerComponent } from './dashboard/game-controller/game-contro
     DashboardComponent,
     CardStacksComponent,
     InfoBoxComponent,
-    GameControllerComponent
+    GameControllerComponent,
+    GameMenuComponent,
+    HowToPlayComponent
   ],
   imports: [
     BrowserModule,
     CommonModule,
     DragDropModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    RouterModule.forRoot(routes)
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,0 +1,28 @@
+:host {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  background-color: #008300;
+  flex: 1;
+  position: relative;
+}
+
+.title {
+  margin-top: 10%;
+}
+
+.menu-container {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+
+  button {
+    height: 50px;
+    font-size: 20px;
+    margin-bottom: 15px;
+    &:hover {
+      background-color: beige;
+    }
+  }
+}

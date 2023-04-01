@@ -10,15 +10,23 @@
   <div class="action-description">
     Redo
   </div>
-  <button class="material-icons">
+  <button class="material-icons" (click)="reDo()">
     redo
   </button>
 </div>
 <div class="action-container">
   <div class="action-description">
-    Restart Game
+    Reset Game
   </div>
   <button (click)="reset()" class="material-icons">
     restart_alt
+  </button>
+</div>
+<div class="action-container">
+  <div class="action-description">
+    Main Menu
+  </div>
+  <button (click)="mainMenu()" class="material-symbols-outlined">
+        home
   </button>
 </div>
