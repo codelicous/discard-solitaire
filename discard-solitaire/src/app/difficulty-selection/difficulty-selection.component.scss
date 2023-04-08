@@ -1,0 +1,160 @@
+$brown: #8b4513;
+
+:host {
+  background-color: #008300;
+  display: flex;
+  flex: 1;
+  height: 100%;
+  flex-direction: column;
+}
+.top-section {
+  display: flex;
+  flex: 1;
+
+  .rules-box, .difficulties-container {
+    background-color: #f5f0e1;
+    border: 3px double $brown;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+    font-size: 18px;
+    line-height: 1.5;
+    margin: 20px 20px 0 20px;
+    padding: 20px;
+    text-align: justify;
+    position: relative;
+
+    &:before {
+      left: -24px;
+      top: -24px;
+      border-color: $brown transparent transparent $brown;
+    }
+
+    &:after {
+      left: -24px;
+      top: -24px;
+      border-color: $brown transparent transparent $brown;
+    }
+
+    h3 {
+      color: $brown;
+      font-size: 24px;
+      margin-bottom: 10px;
+      text-decoration: underline;
+
+      &.game-rules-title {
+        font-size: 40px;
+        margin-top: 0;
+      }
+    }
+    p, ul, ol {
+      margin-bottom: 15px;
+    }
+    ul, li {
+      list-style-type: disc;
+    }
+
+    ol li {
+      list-style-type: decimal;
+    }
+  }
+
+  .difficulties-container {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    .title {
+      font-size: 24px;
+      color: $brown;
+      margin-bottom: 15px;
+    }
+    .boxes-container{
+      display: flex;
+    }
+    .difficulty-container {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      color: $brown;;
+      border: solid;
+      border-color: $brown;
+      border-radius: 5px;
+      padding: 10px;
+      white-space: nowrap;
+      margin-left: 10px;
+      box-sizing: border-box;
+      &:hover, &.selected {
+        box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+        &.easiest {
+          color: #7AC74F;
+          border-color:  #7AC74F;
+        }
+        &.normal {
+          color: #4F8ABD;
+          border-color:  #4F8ABD;
+        }
+        &.hard {
+          color: #F4A74F;
+          border-color:  #F4A74F;
+        }
+        &.hardest {
+          color: #DC4F4F;
+          border-color:  #DC4F4F;
+        }
+        .difficulty-level-title {
+          font-weight: bold;
+        }
+      }
+      .difficulty-level-title {
+        font-size: 20px;
+      }
+      .description {
+        font-size: 16px;
+      }
+
+
+      &:before {
+        left: -24px;
+        top: -24px;
+        border-color: $brown transparent transparent $brown;
+      }
+
+      &:after {
+        left: -24px;
+        top: -24px;
+        border-color: $brown transparent transparent $brown;
+      }
+    }
+}
+
+}
+.navigation-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 20%;
+  overflow: hidden;
+  color: $brown;
+  .selection-title {
+    font-size: 24px;
+    margin: 20px;
+  }
+  background-color: #f5f0e1;
+  margin: 20px;
+  button {
+    height: 100px;
+    width: 200px;
+    padding: 15px;
+    color: $brown;
+    border-color: $brown;
+    &.continue {
+      margin-right: 15px;
+    }
+    &:hover {
+      font-weight: bold;
+      border-width: 4px;
+    }
+  }
+}

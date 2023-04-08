@@ -1,0 +1,87 @@
+<div class="top-section container">
+  <div class="rules-box">
+    <h3 class="game-rules-title"> Game Rules:</h3>
+    <div class="base-rules-title"></div>
+    <div id="rules-summary">
+      <h3>Objective:</h3>
+      <p>Remove cards from the tableau until only the four kings remain.</p>
+
+      <h3>Setup:</h3>
+      <ul>
+        <li>Shuffle a 52-card deck.</li>
+        <li>Deal four cards faceup in a row (tableau) and place the remaining cards facedown (stockpile).</li>
+      </ul>
+
+      <h3>Play:</h3>
+      <ol>
+        <li>Discard cards higher in value than another card of the same suit.</li>
+        <li>Deal four new cards from the stockpile when no more cards can be discarded.</li>
+        <li>Move any tableau card to an empty space if one is created.</li>
+        <li>Win when only the four kings remain.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="difficulties-container">
+    <div class="title">Please Select a Difficulty Level</div>
+    <div class="boxes-container">
+      <div
+        class="difficulty-container easiest"
+        (click)="selectDifficulty(difficultTypeEnum.Easy)"
+        [class.selected]="configurationService?.selectedDifficulty === difficultTypeEnum.Easy">
+        <div class="difficulty-level-title">
+          Easy
+        </div>
+        <div class="description">Pair Removal Allowed</div>
+      </div>
+      <div
+        class="difficulty-container normal"
+        (click)="selectDifficulty(difficultTypeEnum.Normal)"
+        [class.selected]="configurationService?.selectedDifficulty === difficultTypeEnum.Normal">
+        <div class="difficulty-level-title">
+          Normal
+        </div>
+        <div class="description">Free Aces Movement</div>
+      </div>
+      <div
+        class="difficulty-container hard"
+        (click)="selectDifficulty(difficultTypeEnum.Hard)"
+        [class.selected]="configurationService?.selectedDifficulty === difficultTypeEnum.Hard"
+      >
+        <div class="difficulty-level-title">
+          Hard
+        </div>
+        <div class="description">Same Suit Discard Allowed</div>
+      </div>
+      <div
+        class="difficulty-container hardest"
+        (click)="selectDifficulty(difficultTypeEnum.Hardest)"
+        [class.selected]="configurationService?.selectedDifficulty === difficultTypeEnum.Hardest"
+      >
+        <div class="difficulty-level-title">
+          Hardest
+        </div>
+        <div class="description">
+          Standard Rules
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="navigation-container">
+  <div class="directions-container">
+    <div class="selection-title"> Difficulty Selected: {{configurationService?.selectedDifficulty}}</div>
+  </div>
+  <div class="buttons-container">
+    <button
+      class="continue"
+      (click)="navigate(gameRoute)">
+      Start Games
+    </button>
+    <button
+      class="back"
+    (click)="navigate(homeRoute)">
+      Back To Main Menu
+    </button>
+  </div>
+</div>

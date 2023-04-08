@@ -49,3 +49,10 @@ export interface GameState {
   cardStacks:  Card[][][];
   moveState: number;
 }
+
+export enum DifficultyType  {
+  Easy= 'Easy',
+  Normal = 'Normal',
+  Hard = 'Hard',
+  Hardest = 'Hardest'
+}

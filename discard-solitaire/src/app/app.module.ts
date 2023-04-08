@@ -11,13 +11,21 @@ import { GameControllerComponent } from './dashboard/game-controller/game-contro
 import { GameMenuComponent } from './game-menu/game-menu.component';
 import {RouterModule, Routes} from "@angular/router";
 import { HowToPlayComponent } from './how-to-play/how-to-play.component';
+import { DifficultySelectionComponent } from './difficulty-selection/difficulty-selection.component';
 
+export enum RoutesNames  {
+  Home = 'home',
+  Game = 'game',
+  HowToPlay = 'how-to-play',
+  DifficultySelection = 'difficulty-selection'
+}
 
 const routes: Routes = [
   { path: '', component: GameMenuComponent },
-  { path: 'home', component: GameMenuComponent},
-  { path: 'game', component: DashboardComponent },
-  { path: 'how-to-play', component: HowToPlayComponent },
+  { path: RoutesNames.Home, component: GameMenuComponent},
+  { path: RoutesNames.Game, component: DashboardComponent },
+  { path: RoutesNames.HowToPlay, component: HowToPlayComponent },
+  { path: RoutesNames.DifficultySelection, component: DifficultySelectionComponent },
 ];
 
 @NgModule({
@@ -28,7 +36,8 @@ const routes: Routes = [
     InfoBoxComponent,
     GameControllerComponent,
     GameMenuComponent,
-    HowToPlayComponent
+    HowToPlayComponent,
+    DifficultySelectionComponent
   ],
   imports: [
     BrowserModule,

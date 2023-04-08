@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import {Router} from "@angular/router";
+import {RoutesNames} from "../app.module";
 
 @Component({
   selector: 'app-game-menu',
@@ -12,10 +13,14 @@ export class GameMenuComponent {
   }
 
   public startGame(): void {
-    this.router.navigate(['game']).then(console.log);
+    this.router.navigate([RoutesNames.DifficultySelection]).then(console.log);
   }
 
-  howToPlay() {
+  public howToPlay(): void {
     window.open('http://www.solitairecentral.com/rules/IdiotsDelight.html', '_blank', 'noopener,noreferrer');
+  }
+
+  public difficultySelection():void {
+    this.router.navigate([RoutesNames.DifficultySelection])
   }
 }
