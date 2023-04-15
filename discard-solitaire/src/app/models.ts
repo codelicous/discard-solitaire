@@ -51,8 +51,10 @@ export interface GameState {
 }
 
 export enum DifficultyType  {
-  Easy= 'Easy',
-  Normal = 'Normal',
-  Hard = 'Hard',
-  Hardest = 'Hardest'
+  Not,
+  Easy,
+  Normal,
+  Hard,
+  Hardest
 }
+export const difficultyKeys = _.invert(DifficultyType);

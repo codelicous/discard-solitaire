@@ -2,16 +2,18 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
-  HostListener, OnInit,
+  HostListener,
+  OnInit,
   QueryList,
   Renderer2,
   ViewChildren
 } from '@angular/core';
 import {CardsHelper} from "../cards-helper";
-import {Card, GameState, UtilClasses} from "../models";
+import {Card, DifficultyType, GameState, UtilClasses} from "../models";
 
 import _ from 'lodash';
 import {CdkDragDrop, CdkDragExit, CdkDragStart, transferArrayItem} from "@angular/cdk/drag-drop";
+import {ConfigurationService} from "../configuration.service";
 
 @Component({
   selector: 'app-dashboard',
@@ -34,7 +36,6 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  public title = 'discard-solitaire';
   helper: CardsHelper = new CardsHelper();
   public deck: Card[] = this.helper.getDeck();
   public undoNumber = 0;
@@ -45,7 +46,6 @@ export class DashboardComponent implements OnInit {
   public cardImage2;
   public cardImage3;
 
-  public trackByIdentity = (index: number, item: any) => item;
   private gameState: GameState = {
     deck: [],
     cardStacks: [],
@@ -55,12 +55,15 @@ export class DashboardComponent implements OnInit {
   public discardedBeforeDeal = 0;
   public movedCard: Card;
 
-  constructor(private renderer: Renderer2, private changeDetectorRef: ChangeDetectorRef) {
+  constructor(private renderer: Renderer2,
+              private configurationService: ConfigurationService,
+              private changeDetectorRef: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
     this.deck = this.helper.getDeck();
     this.dealToStacks(true);
+    this.setGameDifficulty();
   }
 
 
@@ -114,12 +117,16 @@ export class DashboardComponent implements OnInit {
 
   private canDiscard(i: number): boolean {
     const currentCard = this.cardStacks[i][0];
+
     if (!currentCard) {
       return false;
     }
+
     const otherCards = this.cardStacks.map(stack => stack[0]).filter(card => card?.img !== currentCard.img);
     return this.hasHigherCardSameType(currentCard, otherCards) ||
-      this.cardBehindSameKindHigher(this.cardStacks[i]);
+
+      (this.configurationService.selectedDifficulty < DifficultyType.Hardest && this.cardBehindSameKindHigher(this.cardStacks[i]))
+      || (this.configurationService.selectedDifficulty === DifficultyType.Easy && otherCards.some(card => card.value === currentCard.value));
   }
 
   private hasHigherCardSameType(currentCard: Card, otherCards: Card[]): boolean {
@@ -166,6 +173,7 @@ export class DashboardComponent implements OnInit {
 
     this.movedIndex = i;
     this.movedCard = this.cardStacks[i].shift();
+    this.changeDetectorRef.markForCheck();
   }
 
   public endDrag(i: number) {
@@ -186,29 +194,12 @@ export class DashboardComponent implements OnInit {
     [...this.cardStackRefs, ...this.cardMarginsRefs].forEach(ref => this.renderer.removeClass(ref.nativeElement, UtilClasses.Marked));
   }
 
-  public getConnectedToDropLists(i: number) {
-    return this.cardStacks.map((val, index) => {
-      if (index === i) {
-        return null;
-      }
-      return `drop-list_${index}`;
-    }).filter(val => !!val);
-  }
-
   private markElement(element: HTMLElement, i: number): void {
     this.unMarkAllCards();
     const cardMargin = this.cardMarginsRefs.filter(ref => ref.nativeElement.classList.contains(`stack-num-${i}`)).pop();
 
     cardMargin && this.renderer.addClass(cardMargin.nativeElement, UtilClasses.Marked);
     this.renderer.addClass(element, UtilClasses.Marked);
-  }
-
-  onHoverEnter($event, i: number) {
-    if (this.movedIndex === i) {
-      return
-    }
-
-    this.renderer.addClass($event.container.element.nativeElement?.querySelector('.top-deck'), 'hide');
   }
 
   onHoverExited($event: CdkDragExit<number>, i: number) {
@@ -286,5 +277,22 @@ export class DashboardComponent implements OnInit {
     this.changeDetectorRef.detectChanges();
     this.deck = this.helper.getDeck();
     this.dealToStacks(true);
+  }
+
+  private setGameDifficulty(): void {
+    switch (this.configurationService.selectedDifficulty) {
+      case DifficultyType.Easy: {
+        break;
+      }
+      case DifficultyType.Normal: {
+        break;
+      }
+      case DifficultyType.Hard: {
+        break;
+      }
+      default: {
+
+      }
+    }
   }
 }

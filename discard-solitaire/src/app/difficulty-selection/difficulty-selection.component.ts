@@ -1,5 +1,5 @@
-import {Component, inject} from '@angular/core';
-import {DifficultyType} from "../models";
+import {Component} from '@angular/core';
+import {difficultyKeys, DifficultyType} from "../models";
 import {ConfigurationService} from "../configuration.service";
 import {RoutesNames} from "../app.module";
 import {Router} from "@angular/router";
@@ -13,7 +13,7 @@ export class DifficultySelectionComponent {
   public readonly difficultTypeEnum = DifficultyType;
   public readonly homeRoute = RoutesNames.Home;
   public readonly gameRoute = RoutesNames.Game;
-
+  public readonly difficultyKeys = difficultyKeys;
   constructor(public configurationService: ConfigurationService,
               private router: Router) {
   }

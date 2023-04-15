@@ -65,21 +65,48 @@ $brown: #8b4513;
     align-items: center;
     flex-direction: column;
     justify-content: center;
+
     .title {
       font-size: 24px;
       color: $brown;
       margin-bottom: 15px;
     }
+
     .boxes-container{
       display: flex;
     }
+
+    .rules-in-effect-container {
+      margin-bottom: auto;
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      width: 100%;
+      .rules-in-effect-title {
+        font-size: 32px;
+        text-decoration: underline;
+        color: $brown;
+      }
+    }
+
+    .rule {
+      visibility: hidden;
+      margin-bottom: 15px;
+      &.visible {
+        visibility: visible;
+      }
+      .title {
+        margin-bottom: 0;
+        text-decoration: underline;
+      }
+    }
+
     .difficulty-container {
       display: flex;
       flex: 1;
       flex-direction: column;
       color: $brown;;
-      border: solid;
-      border-color: $brown;
+      border: solid $brown;
       border-radius: 5px;
       padding: 10px;
       white-space: nowrap;

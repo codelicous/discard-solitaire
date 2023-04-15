@@ -3,13 +3,15 @@ import {
   Component,
   ElementRef,
   EventEmitter,
-  Input, Output,
+  Input,
+  Output,
   QueryList,
   Renderer2,
   ViewChildren
 } from '@angular/core';
-import { Card } from "../../models";
-import { CdkDragDrop, CdkDragExit, CdkDragStart } from "@angular/cdk/drag-drop";
+import {Card, DifficultyType} from "../../models";
+import {CdkDragDrop, CdkDragExit, CdkDragStart} from "@angular/cdk/drag-drop";
+import {ConfigurationService} from "../../configuration.service";
 
 @Component({
   selector: 'app-card-stacks',
@@ -31,7 +33,10 @@ export class CardStacksComponent {
   @Output() onEndDrag= new EventEmitter<any>();
   @Output() onShiftCard= new EventEmitter<any>();
   @Output() hoverExited= new EventEmitter<any>();
-  constructor(private changeDetectorRef: ChangeDetectorRef, private renderer: Renderer2,) {
+
+  constructor(private changeDetectorRef: ChangeDetectorRef,
+              private configurationService: ConfigurationService,
+              private renderer: Renderer2) {
 
   }
   public trackByIdentity = (index: number, item: any) => item;
@@ -53,6 +58,11 @@ export class CardStacksComponent {
   }
 
   public canEnterDropList(i: number): boolean {
+    if (this.configurationService.selectedDifficulty <= DifficultyType.Normal) {
+      return (this.movedCard?.value === 1 && this.shownCards().filter(card => card?.value === 1).length === 0) &&
+        i !== this.movedIndex ||  (!this.cardStacks[i].length && (i !== this.movedIndex)) ;
+    }
+
     return !this.cardStacks[i].length && (i !== this.movedIndex);
   }
 
@@ -60,17 +70,15 @@ export class CardStacksComponent {
   this.onShiftCard.emit({$event, i})
   }
 
-  public endDrag(i: number) {
-    this.onEndDrag.emit(i);
+  public shownCards(): Card[] {
+    return  this.cardStacks.map(stack=> stack[0]);
   }
 
   public triggerAction($event: MouseEvent, i: number): void {
     this.onTriggerAction.emit({$event, i});
   }
 
-
-
-  public getConnectedToDropLists(i: number) {
+  public getConnectedToDropLists(i: number): string[] {
     return this.cardStacks.map((val, index) => {
       if (index === i) {
         return null;
