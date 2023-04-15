@@ -9,7 +9,12 @@ import {
   ViewChildren
 } from '@angular/core';
 import {CardsHelper} from "../cards-helper";
-import {Card, DifficultyType, GameState, UtilClasses} from "../models";
+import { Card,
+         cardValue,
+         DifficultyType,
+         GameState,
+         UtilClasses
+} from "../models";
 
 import _ from 'lodash';
 import {CdkDragDrop, CdkDragExit, CdkDragStart, transferArrayItem} from "@angular/cdk/drag-drop";
@@ -123,7 +128,8 @@ export class DashboardComponent implements OnInit {
     }
 
     const otherCards = this.cardStacks.map(stack => stack[0]).filter(card => card?.img !== currentCard.img);
-    return this.hasHigherCardSameType(currentCard, otherCards) ||
+    return !this.isKing(currentCard) &&
+      this.hasHigherCardSameType(currentCard, otherCards) ||
 
       (this.configurationService.selectedDifficulty < DifficultyType.Hardest && this.cardBehindSameKindHigher(this.cardStacks[i]))
       || (this.configurationService.selectedDifficulty === DifficultyType.Easy && otherCards.some(card => card.value === currentCard.value));
@@ -294,5 +300,9 @@ export class DashboardComponent implements OnInit {
 
       }
     }
+  }
+
+  private isKing(currentCard: Card): boolean {
+    return currentCard.value === cardValue.king;
   }
 }
