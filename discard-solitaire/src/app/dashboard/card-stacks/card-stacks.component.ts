@@ -27,7 +27,6 @@ export class CardStacksComponent {
   @Input() movedIndex: number;
   @Input() movedCard: Card;
 
-  @Output() discardIfCan = new EventEmitter<{event: MouseEvent, index: number}>();
   @Output() onTriggerAction = new EventEmitter<any>();
   @Output() drop = new EventEmitter<any>();
   @Output() onEndDrag= new EventEmitter<any>();

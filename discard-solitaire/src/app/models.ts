@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import _ from 'lodash-es';
 export interface Card {
   type: CardType;
   value: number;

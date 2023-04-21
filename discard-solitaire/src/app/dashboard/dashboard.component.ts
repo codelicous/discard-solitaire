@@ -130,7 +130,6 @@ export class DashboardComponent implements OnInit {
     const otherCards = this.cardStacks.map(stack => stack[0]).filter(card => card?.img !== currentCard.img);
     return !this.isKing(currentCard) &&
       this.hasHigherCardSameType(currentCard, otherCards) ||
-
       (this.configurationService.selectedDifficulty < DifficultyType.Hardest && this.cardBehindSameKindHigher(this.cardStacks[i]))
       || (this.configurationService.selectedDifficulty === DifficultyType.Easy && otherCards.some(card => card.value === currentCard.value));
   }
@@ -167,7 +166,7 @@ export class DashboardComponent implements OnInit {
   public cardsLeft(): number {
     return this.cardStacks
       .map(stack => stack.length)
-      .reduce((previousValue, currentValue, currentIndex, array) => previousValue + currentValue, 0);
+      .reduce((previousValue, currentValue) => previousValue + currentValue, 0);
   }
 
   public shiftCard($event: CdkDragStart, i: number): void {
@@ -186,6 +185,7 @@ export class DashboardComponent implements OnInit {
     this.cardStacks[i].unshift(this.movedCard);
     this.movedCard = null;
     this.unMarkAllCards();
+    console.log('post Action');
   }
 
   public triggerAction($event: MouseEvent, i: number): void {
