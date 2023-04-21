@@ -128,10 +128,10 @@ export class DashboardComponent implements OnInit {
     }
 
     const otherCards = this.cardStacks.map(stack => stack[0]).filter(card => card?.img !== currentCard.img);
-    return !this.isKing(currentCard) &&
+    return !this.isKing(currentCard) &&(
       this.hasHigherCardSameType(currentCard, otherCards) ||
       (this.configurationService.selectedDifficulty < DifficultyType.Hardest && this.cardBehindSameKindHigher(this.cardStacks[i]))
-      || (this.configurationService.selectedDifficulty === DifficultyType.Easy && otherCards.some(card => card.value === currentCard.value));
+      || (this.configurationService.selectedDifficulty === DifficultyType.Easy && otherCards.some(card => card.value === currentCard.value)));
   }
 
   private hasHigherCardSameType(currentCard: Card, otherCards: Card[]): boolean {
@@ -303,6 +303,7 @@ export class DashboardComponent implements OnInit {
   }
 
   private isKing(currentCard: Card): boolean {
+    console.log(`isKing: + ${currentCard.value === cardValue.king}`);
     return currentCard.value === cardValue.king;
   }
 }
