@@ -303,7 +303,6 @@ export class DashboardComponent implements OnInit {
   }
 
   private isKing(currentCard: Card): boolean {
-    console.log(`isKing: + ${currentCard.value === cardValue.king}`);
     return currentCard.value === cardValue.king;
   }
 }
