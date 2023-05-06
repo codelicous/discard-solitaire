@@ -48,6 +48,7 @@ export interface GameState {
   deck: Card[][];
   cardStacks:  Card[][][];
   moveState: number;
+  discarded: number;
 }
 
 export enum DifficultyType  {

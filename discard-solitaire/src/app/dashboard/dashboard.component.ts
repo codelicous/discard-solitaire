@@ -9,14 +9,15 @@ import {
   ViewChildren
 } from '@angular/core';
 import {CardsHelper} from "../cards-helper";
-import { Card,
-         cardValue,
-         DifficultyType,
-         GameState,
-         UtilClasses
+import {
+  Card,
+  cardValue,
+  DifficultyType,
+  GameState,
+  UtilClasses
 } from "../models";
 
-import _ from 'lodash';
+import _ from 'lodash-es';
 import {CdkDragDrop, CdkDragExit, CdkDragStart, transferArrayItem} from "@angular/cdk/drag-drop";
 import {ConfigurationService} from "../configuration.service";
 
@@ -29,13 +30,13 @@ export class DashboardComponent implements OnInit {
   @ViewChildren('cardStack') cardStackRefs: QueryList<ElementRef>;
   @ViewChildren('cardMargins') cardMarginsRefs: QueryList<ElementRef>;
 
-  @HostListener('document:keypress', ['$event'])
+
+  @HostListener('window:keydown', ['$event'])
   public onKeyPress(event: KeyboardEvent) {
     if (event.key === 'Z' && event.ctrlKey && event.shiftKey) {
       this.reDoState();
       return;
     }
-
     if (event.key === 'z' && event.ctrlKey === true) {
       this.undoGameState();
     }
@@ -54,7 +55,8 @@ export class DashboardComponent implements OnInit {
   private gameState: GameState = {
     deck: [],
     cardStacks: [],
-    moveState: 0
+    moveState: 0,
+    discarded: 0
   }
   public movedIndex: number;
   public discardedBeforeDeal = 0;
@@ -82,15 +84,14 @@ export class DashboardComponent implements OnInit {
         this.fillEmptyStacks();
         this.updateGameState();
         this.discardedBeforeDeal = 0;
+        this.checkGameState()
         return;
       } else {
         return;
       }
     }
 
-    this.cardStacks = this.cardStacks.map(stack => {
-      return this.deck.length && [this.deck.pop(), ...stack] || stack;
-    });
+    this.cardStacks = this.cardStacks.map(stack => this.deck.length && [this.deck.pop(), ...stack] || stack);
     this.updateTopCardImages();
     this.updateGameState();
     this.discardedBeforeDeal = 0;
@@ -117,6 +118,7 @@ export class DashboardComponent implements OnInit {
       this.cardStacks[i].shift();
       this.updateCardImageAfterDiscard(i);
       this.updateGameState();
+      this.checkGameState();
     }
   }
 
@@ -130,21 +132,21 @@ export class DashboardComponent implements OnInit {
     const otherCards = this.cardStacks.map(stack => stack[0]).filter(card => card?.img !== currentCard.img);
     return !this.isKing(currentCard) &&(
       this.hasHigherCardSameType(currentCard, otherCards) ||
-      (this.configurationService.selectedDifficulty < DifficultyType.Hardest && this.cardBehindSameKindHigher(this.cardStacks[i]))
-      || (this.configurationService.selectedDifficulty === DifficultyType.Easy && otherCards.some(card => card.value === currentCard.value)));
+      (this.configurationService.selectedDifficulty < DifficultyType.Hardest && this.cardBehindSameKindHigher(this.cardStacks[i])) ||
+      (this.configurationService.selectedDifficulty === DifficultyType.Easy && otherCards.some(card => card?.value === currentCard?.value)));
   }
 
   private hasHigherCardSameType(currentCard: Card, otherCards: Card[]): boolean {
     return otherCards.some(card => card && (card.type == currentCard.type && card.value > currentCard.value));
   }
 
-  private updateCardImageAfterDiscard(i: number) {
+  private updateCardImageAfterDiscard(i: number): void {
     this[`cardImage${i}`] = this.cardStacks[i][0]?.img;
     this.discarded++;
     this.discardedBeforeDeal++;
   }
 
-  public drop($event: CdkDragDrop<any, any>, i: number) {
+  public drop($event: CdkDragDrop<any, any>, i: number): void {
     this.movedIndex = null;
     if ($event.previousContainer === $event.container) {
       this.endDrag(i);
@@ -160,6 +162,7 @@ export class DashboardComponent implements OnInit {
       $event.currentIndex,
     );
     this.cardStacks = [...this.cardStacks];
+    this.checkGameState();
   }
 
 
@@ -178,14 +181,13 @@ export class DashboardComponent implements OnInit {
 
     this.movedIndex = i;
     this.movedCard = this.cardStacks[i].shift();
-    this.changeDetectorRef.markForCheck();
+    this.changeDetectorRef.detectChanges();
   }
 
-  public endDrag(i: number) {
+  public endDrag(i: number): void {
     this.cardStacks[i].unshift(this.movedCard);
     this.movedCard = null;
     this.unMarkAllCards();
-    console.log('post Action');
   }
 
   public triggerAction($event: MouseEvent, i: number): void {
@@ -208,10 +210,11 @@ export class DashboardComponent implements OnInit {
     this.renderer.addClass(element, UtilClasses.Marked);
   }
 
-  onHoverExited($event: CdkDragExit<number>, i: number) {
+  onHoverExited($event: CdkDragExit<number>, i: number): void {
     if (this.movedIndex === i) {
       return
     }
+
     this.renderer.removeClass($event.container.element.nativeElement?.querySelector('.top-deck'), 'hide');
   }
 
@@ -232,7 +235,7 @@ export class DashboardComponent implements OnInit {
   }
 
   private noCardToFillEmptyStack(): boolean {
-    return this.cardStacks.every(stack => stack.length <= 1);
+    return this.cardStacks.some(stack => stack.length === 0);
   }
 
   private updateGameState(): void {
@@ -249,6 +252,7 @@ export class DashboardComponent implements OnInit {
     this.deck = this.gameState.deck[this.gameState.moveState - 2];
     this.cardStacks = this.gameState.cardStacks[this.gameState.moveState - 2];
     this.gameState.moveState -= 1;
+    this.discarded = this.calcDiscarded();
     this.updateTopCardImages();
     this.changeDetectorRef.detectChanges();
     this.undoNumber += 1;
@@ -261,6 +265,7 @@ export class DashboardComponent implements OnInit {
     this.deck = this.gameState.deck[this.gameState.moveState];
     this.cardStacks = this.gameState.cardStacks[this.gameState.moveState];
     this.gameState.moveState += 1;
+    this.discarded = this.calcDiscarded();
     this.updateTopCardImages();
     this.changeDetectorRef.detectChanges();
     this.undoNumber -= 1;
@@ -270,7 +275,8 @@ export class DashboardComponent implements OnInit {
     this.gameState = {
       deck: [],
       cardStacks: [],
-      moveState: 0
+      moveState: 0,
+      discarded: 0
     };
     this.discarded = 0;
     this.undoNumber = 0;
@@ -304,5 +310,39 @@ export class DashboardComponent implements OnInit {
 
   private isKing(currentCard: Card): boolean {
     return currentCard.value === cardValue.king;
+  }
+
+  private checkGameState(): void {
+    if(this.gameWon()) {
+      this.openWinnerModal();
+      return;
+    }
+    if(this.gameLost()) {
+      this.openLoserModal();
+      return;
+    }
+  }
+
+  private gameWon(): boolean {
+    return (this.discarded === 48) &&
+      this.cardStacks.every(stack => (stack.length === 1) &&
+        (stack[0].value === cardValue.king));
+  }
+
+  private gameLost(): boolean {
+    //should this be ?
+    return false;
+  }
+
+  private openWinnerModal(): void {
+    console.log('game won!');
+  }
+
+  private openLoserModal(): void{
+
+  }
+
+  private calcDiscarded(): number {
+    return 52 - this.cardsLeft() - this.deck.length;
   }
 }

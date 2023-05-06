@@ -58,8 +58,9 @@ export class CardStacksComponent {
 
   public canEnterDropList(i: number): boolean {
     if (this.configurationService.selectedDifficulty <= DifficultyType.Normal) {
-      return (this.movedCard?.value === 1 && this.shownCards().filter(card => card?.value === 1).length === 0) &&
-        i !== this.movedIndex ||  (!this.cardStacks[i].length && (i !== this.movedIndex)) ;
+
+      return ((this.movedCard?.value === 1 && this.shownCards().filter(card => card?.value === 1).length === 0) &&
+        i !== this.movedIndex) ||  (!this.cardStacks[i].length && (i !== this.movedIndex));
     }
 
     return !this.cardStacks[i].length && (i !== this.movedIndex);
@@ -85,7 +86,4 @@ export class CardStacksComponent {
       return `drop-list_${index}`;
     }).filter(Boolean);
   }
-
-
-
 }
