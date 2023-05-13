@@ -3,6 +3,7 @@ import {
   Component,
   ElementRef,
   HostListener,
+  OnDestroy,
   OnInit,
   QueryList,
   Renderer2,
@@ -18,15 +19,26 @@ import {
 } from "../models";
 
 import _ from 'lodash-es';
-import {CdkDragDrop, CdkDragExit, CdkDragStart, transferArrayItem} from "@angular/cdk/drag-drop";
+import {
+  CdkDragDrop,
+  CdkDragExit,
+  CdkDragStart,
+  transferArrayItem
+} from "@angular/cdk/drag-drop";
 import {ConfigurationService} from "../configuration.service";
+import {MatDialog} from "@angular/material/dialog";
+import {GameWonModalComponent} from "../game-won-modal/game-won-modal.component";
+import {take, takeUntil, tap} from "rxjs/operators";
+import { Subject} from "rxjs";
+import {DialogDestination} from "../game-won-modal/models";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   @ViewChildren('cardStack') cardStackRefs: QueryList<ElementRef>;
   @ViewChildren('cardMargins') cardMarginsRefs: QueryList<ElementRef>;
 
@@ -46,12 +58,13 @@ export class DashboardComponent implements OnInit {
   public deck: Card[] = this.helper.getDeck();
   public undoNumber = 0;
   public discarded = 0;
+  public undoRedoMove = 0;
   public cardStacks: Card[][] = [[], [], [], []];
   public cardImage0;
   public cardImage1;
   public cardImage2;
   public cardImage3;
-
+  private componentDestroyed$ = new Subject();
   private gameState: GameState = {
     deck: [],
     cardStacks: [],
@@ -63,14 +76,19 @@ export class DashboardComponent implements OnInit {
   public movedCard: Card;
 
   constructor(private renderer: Renderer2,
+              private router: Router,
+              private matDialog: MatDialog,
               private configurationService: ConfigurationService,
               private changeDetectorRef: ChangeDetectorRef) {
   }
 
-  ngOnInit(): void {
+
+
+  public ngOnInit(): void {
     this.deck = this.helper.getDeck();
     this.dealToStacks(true);
     this.setGameDifficulty();
+    this.openWinnerModal();
   }
 
 
@@ -202,6 +220,10 @@ export class DashboardComponent implements OnInit {
     [...this.cardStackRefs, ...this.cardMarginsRefs].forEach(ref => this.renderer.removeClass(ref.nativeElement, UtilClasses.Marked));
   }
 
+  public ngOnDestroy(): void {
+    this.componentDestroyed$.next();
+  }
+
   private markElement(element: HTMLElement, i: number): void {
     this.unMarkAllCards();
     const cardMargin = this.cardMarginsRefs.filter(ref => ref.nativeElement.classList.contains(`stack-num-${i}`)).pop();
@@ -256,6 +278,7 @@ export class DashboardComponent implements OnInit {
     this.updateTopCardImages();
     this.changeDetectorRef.detectChanges();
     this.undoNumber += 1;
+    this.undoRedoMove +=1;
   }
 
   public reDoState(): void {
@@ -269,6 +292,7 @@ export class DashboardComponent implements OnInit {
     this.updateTopCardImages();
     this.changeDetectorRef.detectChanges();
     this.undoNumber -= 1;
+    this.undoRedoMove += 1;
   }
 
   public resetGame(): void {
@@ -335,14 +359,32 @@ export class DashboardComponent implements OnInit {
   }
 
   private openWinnerModal(): void {
-    console.log('game won!');
+    const score  = this.calcScore();
+
+    const dialogRef = this.matDialog.open(GameWonModalComponent,{ disableClose: true, data: { score }});
+    dialogRef.afterClosed()
+      .pipe(
+      take(1),
+      takeUntil(this.componentDestroyed$),
+      tap(this.navigateFromDialog.bind(this))
+      ).subscribe();
   }
 
-  private openLoserModal(): void{
-
+  private navigateFromDialog( destination: DialogDestination){
+    switch (destination) {
+      case DialogDestination.Home:
+        this.router.navigate(['home']);
+        break;
+      case DialogDestination.NewGame:
+        this.resetGame();
+    }
   }
 
   private calcDiscarded(): number {
     return 52 - this.cardsLeft() - this.deck.length;
+  }
+
+  private calcScore(): number {
+    return (640000 - 100 * this.undoRedoMove) * this.configurationService.selectedDifficulty;
   }
 }

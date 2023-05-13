@@ -12,6 +12,8 @@ import { GameMenuComponent } from './game-menu/game-menu.component';
 import {RouterModule, Routes} from "@angular/router";
 import { HowToPlayComponent } from './how-to-play/how-to-play.component';
 import { DifficultySelectionComponent } from './difficulty-selection/difficulty-selection.component';
+import { GameWonModalComponent } from './game-won-modal/game-won-modal.component';
+import {MatDialogModule} from "@angular/material/dialog";
 
 export enum RoutesNames  {
   Home = 'home',
@@ -37,13 +39,15 @@ const routes: Routes = [
     GameControllerComponent,
     GameMenuComponent,
     HowToPlayComponent,
-    DifficultySelectionComponent
+    DifficultySelectionComponent,
+    GameWonModalComponent
   ],
   imports: [
     BrowserModule,
     CommonModule,
     DragDropModule,
     BrowserAnimationsModule,
+    MatDialogModule,
     RouterModule.forRoot(routes)
   ],
   providers: [],

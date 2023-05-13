@@ -24,6 +24,6 @@ export class GameControllerComponent {
     this.onReset.emit();
   }
   public mainMenu(): void {
-    this.router.navigate(['home']).then(console.log)
+    this.router.navigate(['home']);
   }
 }
