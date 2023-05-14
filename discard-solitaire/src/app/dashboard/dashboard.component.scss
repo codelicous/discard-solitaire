@@ -19,6 +19,13 @@ $card-border: 1px solid black;
   display: none;
   &.visible {
     display: flex;
+    height: $card-height;
+    width: $card-width;
+    border: dashed 2px  black;
+    border-radius: 5px;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
   }
 }
 

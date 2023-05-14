@@ -88,7 +88,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.deck = this.helper.getDeck();
     this.dealToStacks(true);
     this.setGameDifficulty();
-    this.openWinnerModal();
   }
 
 
@@ -341,21 +340,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.openWinnerModal();
       return;
     }
-    if(this.gameLost()) {
-      this.openLoserModal();
-      return;
-    }
   }
 
   private gameWon(): boolean {
     return (this.discarded === 48) &&
       this.cardStacks.every(stack => (stack.length === 1) &&
         (stack[0].value === cardValue.king));
-  }
-
-  private gameLost(): boolean {
-    //should this be ?
-    return false;
   }
 
   private openWinnerModal(): void {
