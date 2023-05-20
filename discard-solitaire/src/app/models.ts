@@ -49,6 +49,9 @@ export interface GameState {
   cardStacks:  Card[][][];
   moveState: number;
   discarded: number;
+  undoNumber: number,
+  undoRedoMove: number,
+  discardedBeforeDeal: number
 }
 
 export enum DifficultyType  {
@@ -57,5 +60,10 @@ export enum DifficultyType  {
   Normal,
   Hard,
   Hardest
+}
+
+export enum SessionStorageKey {
+  GameState = 'solitaire_gameState',
+  Difficulty = 'solitaire_difficulty'
 }
 export const difficultyKeys = _.invert(DifficultyType);

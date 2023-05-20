@@ -29,9 +29,10 @@ import {ConfigurationService} from "../configuration.service";
 import {MatDialog} from "@angular/material/dialog";
 import {GameWonModalComponent} from "../game-won-modal/game-won-modal.component";
 import {take, takeUntil, tap} from "rxjs/operators";
-import { Subject} from "rxjs";
+import {Subject, Subscription} from "rxjs";
 import {DialogDestination} from "../game-won-modal/models";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
+import {SessionStorageUtil} from "../sessionStorageUtil";
 
 @Component({
   selector: 'app-dashboard',
@@ -56,27 +57,28 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   helper: CardsHelper = new CardsHelper();
   public deck: Card[] = this.helper.getDeck();
-  public undoNumber = 0;
   public discarded = 0;
-  public undoRedoMove = 0;
   public cardStacks: Card[][] = [[], [], [], []];
   public cardImage0;
   public cardImage1;
   public cardImage2;
   public cardImage3;
   private componentDestroyed$ = new Subject();
-  private gameState: GameState = {
+  public gameState: GameState = {
     deck: [],
     cardStacks: [],
     moveState: 0,
-    discarded: 0
+    discarded: 0,
+    undoNumber: 0,
+    undoRedoMove: 0,
+    discardedBeforeDeal: 0
   }
   public movedIndex: number;
-  public discardedBeforeDeal = 0;
   public movedCard: Card;
 
   constructor(private renderer: Renderer2,
               private router: Router,
+              private route: ActivatedRoute,
               private matDialog: MatDialog,
               private configurationService: ConfigurationService,
               private changeDetectorRef: ChangeDetectorRef) {
@@ -85,9 +87,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
 
   public ngOnInit(): void {
-    this.deck = this.helper.getDeck();
-    this.dealToStacks(true);
-    this.setGameDifficulty();
+    this.stateLoaderSubscription();
   }
 
 
@@ -100,7 +100,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       if (this.noCardToFillEmptyStack()) {
         this.fillEmptyStacks();
         this.updateGameState();
-        this.discardedBeforeDeal = 0;
+        this.gameState.discardedBeforeDeal = 0;
         this.checkGameState()
         return;
       } else {
@@ -111,12 +111,35 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.cardStacks = this.cardStacks.map(stack => this.deck.length && [this.deck.pop(), ...stack] || stack);
     this.updateTopCardImages();
     this.updateGameState();
-    this.discardedBeforeDeal = 0;
+    if(initialDeal) {
+      this.gameState.discardedBeforeDeal = 999;
+      this.gameState.discardedBeforeDeal = 0;
+    } else {
+      this.gameState.discardedBeforeDeal = 0;
+    }
+
   }
 
   public discard(stack: Card[]): void {
     stack.pop();
   }
+
+  private stateLoaderSubscription(): Subscription {
+    return  this.route.queryParams.pipe(
+      take(1),
+      takeUntil(this.componentDestroyed$),
+      tap(() => {
+        if(this.configurationService.savedGameState && this.configurationService.selectedDifficulty) {
+          this.gameState = this.configurationService.savedGameState;
+          this.deck = this.gameState.deck[this.gameState.deck.length -1];
+          this.cardStacks = this.gameState.cardStacks[this.gameState.cardStacks.length -1];
+          this.calcDiscarded();
+        } else {
+          this.deck = this.helper.getDeck();
+          this.dealToStacks(true);
+        }
+      })).subscribe();
+}
 
   private updateTopCardImages() {
     this.cardImage0 = this.cardStacks[0][0]?.img;
@@ -159,8 +182,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   private updateCardImageAfterDiscard(i: number): void {
     this[`cardImage${i}`] = this.cardStacks[i][0]?.img;
-    this.discarded++;
-    this.discardedBeforeDeal++;
+    this.calcDiscarded()
+    this.gameState.discardedBeforeDeal++;
   }
 
   public drop($event: CdkDragDrop<any, any>, i: number): void {
@@ -221,6 +244,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy(): void {
     this.componentDestroyed$.next();
+    this.componentDestroyed$.complete();
   }
 
   private markElement(element: HTMLElement, i: number): void {
@@ -263,10 +287,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.gameState.deck.push(_.cloneDeep(this.deck));
     this.gameState.cardStacks.push(_.cloneDeep(this.cardStacks));
     this.gameState.moveState += 1;
+    SessionStorageUtil.saveGameState(this.gameState);
   }
 
   public undoGameState(): void {
-    if (this.undoNumber == 5) {
+    if (this.gameState.undoNumber == 5) {
       return;
     }
 
@@ -276,12 +301,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.discarded = this.calcDiscarded();
     this.updateTopCardImages();
     this.changeDetectorRef.detectChanges();
-    this.undoNumber += 1;
-    this.undoRedoMove +=1;
+    this.gameState.undoNumber += 1;
+    this.gameState.undoRedoMove +=1;
   }
 
   public reDoState(): void {
-    if (!this.undoNumber) {
+    if (!this.gameState.undoNumber) {
       return;
     }
     this.deck = this.gameState.deck[this.gameState.moveState];
@@ -290,8 +315,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.discarded = this.calcDiscarded();
     this.updateTopCardImages();
     this.changeDetectorRef.detectChanges();
-    this.undoNumber -= 1;
-    this.undoRedoMove += 1;
+    this.gameState.undoNumber -= 1;
+    this.gameState.undoRedoMove += 1;
   }
 
   public resetGame(): void {
@@ -299,38 +324,27 @@ export class DashboardComponent implements OnInit, OnDestroy {
       deck: [],
       cardStacks: [],
       moveState: 0,
-      discarded: 0
+      discarded: 0,
+      undoRedoMove: 0,
+      undoNumber: 0,
+      discardedBeforeDeal: 999
     };
     this.discarded = 0;
-    this.undoNumber = 0;
+    this.gameState.undoNumber = 0;
     this.cardStacks = [[], [], [], []];
     this.cardImage1 = null;
     this.cardImage0 = null;
     this.cardImage3 = null;
     this.cardImage2 = null;
     this.movedCard = null;
-    this.changeDetectorRef.detectChanges();
+
+    SessionStorageUtil.reset();
+    this.calcDiscarded();
+
     this.deck = this.helper.getDeck();
     this.dealToStacks(true);
+    this.changeDetectorRef.detectChanges();
   }
-
-  private setGameDifficulty(): void {
-    switch (this.configurationService.selectedDifficulty) {
-      case DifficultyType.Easy: {
-        break;
-      }
-      case DifficultyType.Normal: {
-        break;
-      }
-      case DifficultyType.Hard: {
-        break;
-      }
-      default: {
-
-      }
-    }
-  }
-
   private isKing(currentCard: Card): boolean {
     return currentCard.value === cardValue.king;
   }
@@ -343,7 +357,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   private gameWon(): boolean {
-    return (this.discarded === 48) &&
+    return (this.calcDiscarded() === 48) &&
       this.cardStacks.every(stack => (stack.length === 1) &&
         (stack[0].value === cardValue.king));
   }
@@ -364,17 +378,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
     switch (destination) {
       case DialogDestination.Home:
         this.router.navigate(['home']);
+        SessionStorageUtil.reset();
         break;
       case DialogDestination.NewGame:
         this.resetGame();
     }
   }
 
-  private calcDiscarded(): number {
+  public calcDiscarded(): number {
     return 52 - this.cardsLeft() - this.deck.length;
   }
 
   private calcScore(): number {
-    return (640000 - 100 * this.undoRedoMove) * this.configurationService.selectedDifficulty;
+    return (640000 - 100 * this.gameState.undoRedoMove) * this.configurationService.selectedDifficulty;
   }
 }

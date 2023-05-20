@@ -12,9 +12,9 @@
     </div>
 
     <app-info-box
-      [discarded]="discarded"
+      [discarded]="calcDiscarded()"
       [cardsLeft]="cardsLeft()"
-      [largestRunSetter]="discardedBeforeDeal">
+      [largestRunSetter]="gameState.discardedBeforeDeal">
     </app-info-box>
     <app-game-controller
       (onRedo)="reDoState()"

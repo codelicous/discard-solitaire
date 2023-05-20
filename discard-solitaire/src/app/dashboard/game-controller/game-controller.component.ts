@@ -1,5 +1,6 @@
 import {Component, EventEmitter, Output} from '@angular/core';
 import {Router} from "@angular/router";
+import {SessionStorageUtil} from "../../sessionStorageUtil";
 
 @Component({
   selector: 'app-game-controller',
@@ -24,6 +25,7 @@ export class GameControllerComponent {
     this.onReset.emit();
   }
   public mainMenu(): void {
+    SessionStorageUtil.reset();
     this.router.navigate(['home']);
   }
 }
