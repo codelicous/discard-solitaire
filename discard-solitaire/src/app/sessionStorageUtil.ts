@@ -17,7 +17,7 @@ export class SessionStorageUtil {
     const difficulty = sessionStorage.getItem(SessionStorageKey.Difficulty);
     return difficulty && JSON.parse(difficulty);
   }
-  public static reset() {
+  public static reset(): void {
     sessionStorage.clear();
   }
 }

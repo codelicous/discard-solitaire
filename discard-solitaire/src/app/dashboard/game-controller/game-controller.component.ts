@@ -26,6 +26,8 @@ export class GameControllerComponent {
   }
   public mainMenu(): void {
     SessionStorageUtil.reset();
+    SessionStorageUtil.saveGameState(null );
+    SessionStorageUtil.saveGameDifficulty(null);
     this.router.navigate(['home']);
   }
 }

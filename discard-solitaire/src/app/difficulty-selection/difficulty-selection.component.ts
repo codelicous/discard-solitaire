@@ -15,14 +15,18 @@ export class DifficultySelectionComponent {
   public readonly homeRoute = RoutesNames.Home;
   public readonly gameRoute = RoutesNames.Game;
   public readonly difficultyKeys = difficultyKeys;
+
   constructor(public configurationService: ConfigurationService,
               private router: Router) {
   }
+
   public selectDifficulty(selection: DifficultyType): void {
     this.configurationService.selectedDifficulty = selection;
     SessionStorageUtil.saveGameDifficulty(selection);
   }
   public navigate(route: RoutesNames.Home | RoutesNames.Game): void {
+
+    SessionStorageUtil.saveGameDifficulty(this.configurationService.selectedDifficulty);
     this.router.navigate([route]);
   }
 }

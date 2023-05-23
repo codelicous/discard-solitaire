@@ -287,11 +287,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.gameState.deck.push(_.cloneDeep(this.deck));
     this.gameState.cardStacks.push(_.cloneDeep(this.cardStacks));
     this.gameState.moveState += 1;
+    this.gameState.undoNumber = 0;
     SessionStorageUtil.saveGameState(this.gameState);
   }
 
   public undoGameState(): void {
-    if (this.gameState.undoNumber == 5) {
+    if (this.gameState.undoNumber !== 0 || !this.gameState.deck[this.gameState.moveState - 2]) {
       return;
     }
 
@@ -303,6 +304,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.changeDetectorRef.detectChanges();
     this.gameState.undoNumber += 1;
     this.gameState.undoRedoMove +=1;
+    SessionStorageUtil.saveGameState(this.gameState);
   }
 
   public reDoState(): void {
@@ -377,6 +379,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private navigateFromDialog( destination: DialogDestination){
     switch (destination) {
       case DialogDestination.Home:
+        this.resetGame();
         this.router.navigate(['home']);
         SessionStorageUtil.reset();
         break;
