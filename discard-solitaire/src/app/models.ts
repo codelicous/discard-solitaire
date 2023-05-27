@@ -42,7 +42,7 @@ export function enumToArrayKeys<T>(enumObject: T): any {
 
 export interface GameState {
   deck: Card[][];
-  cardStacks:  Card[][][];
+  cardStacks:  Card[][];
   moveState: number;
   discarded: number;
   undoNumber: number,

@@ -9,7 +9,6 @@ import {SessionStorageUtil} from "../../sessionStorageUtil";
 })
 export class GameControllerComponent {
   @Output() public onUndo = new EventEmitter<never>();
-  @Output() public onRedo = new EventEmitter<never>();
   @Output() public onReset = new EventEmitter<never>();
 
   constructor(private router: Router) {
@@ -18,9 +17,7 @@ export class GameControllerComponent {
   public undo(): void {
     this.onUndo.emit();
   }
-  public reDo(): void{
-    this.onRedo.emit();
-  }
+
   public reset(): void {
     this.onReset.emit();
   }
