@@ -137,7 +137,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       tap(() => {
         if (this.configurationService.savedGameState && this.configurationService.selectedDifficulty) {
           this.gameState = this.configurationService.savedGameState;
-          this.deck = this.gameState.deck[this.gameState.deck.length - 1];
+          this.deck = this.gameState.deck;
           this.cardStacks = this.gameState.cardStacks;
           this.calcDiscarded();
         } else {
@@ -246,7 +246,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   public unMarkAllCards(): void {
-    [...this.cardStackRefs, ...this.cardMarginsRefs].forEach(ref => this.renderer.removeClass(ref.nativeElement, UtilClasses.Marked));
+    [...Array.from(document.querySelectorAll('.top-deck')),
+      ...Array.from(document.querySelectorAll('.card-margin'))].forEach(ref => this.renderer.removeClass(ref, UtilClasses.Marked));
   }
 
   public ngOnDestroy(): void {

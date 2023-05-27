@@ -86,4 +86,8 @@ export class CardStacksComponent {
       return `drop-list_${index}`;
     }).filter(Boolean);
   }
+
+  public isCardInStackSelected(i: number, lastMargin): boolean {
+    return lastMargin && !!document.querySelector(`.top-deck.marked._${i}`);
+  }
 }
