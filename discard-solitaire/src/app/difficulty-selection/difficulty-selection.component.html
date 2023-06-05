@@ -22,43 +22,7 @@
     </div>
   </div>
   <div class="difficulties-container">
-  <div class="rules-in-effect-container">
-    <div class="rules-in-effect-title">Rules In Effect: </div>
-
-    <div [class.visible]="configurationService.selectedDifficulty <= difficultTypeEnum.Easy"
-      class="easy-only-rule rule">
-      <div class="title">Pair Removal Allowed</div>
-      <div class="description">
-        You can discard two card with different suit and same value (e.g prince heart and prince diamond)
-      </div>
-    </div>
-
-    <div [class.visible]="configurationService.selectedDifficulty <= difficultTypeEnum.Normal"
-         class="rule">
-      <div class="title">Aces are free</div>
-      <div class="description">
-        Aces be moved from one tableau pile to another, freeing up a space or whatever card they may be covering.
-        The only exception to this rule is that an ace may not be moved onto another ace.
-      </div>
-    </div>
-    <div [class.visible]="configurationService.selectedDifficulty <= difficultTypeEnum.Hard"
-         class="rule">
-      <div class="title">Can Discard Lower suite on top in same pile</div>
-      <div class="description">
-       you are allowed to remove a card if the card it is covering is of the same suit and a higher value.
-        For example, if a tableau pile contained "3H,6S,JD,8D" (with the 8 of diamonds being the one exposed card),
-        then this rule would allow you to remove the 8, because the card that it covers is the same suit (diamond), and is a higher value (jack is higher than 8).
-      </div>
-    </div>
-    <div [class.visible]="configurationService.selectedDifficulty === difficultTypeEnum.Hardest"
-         class="rule">
-      <div class="title">Vanilla Rules</div>
-      <div class="description">
-        just the standard rules.
-        Chances to win: 1/20
-      </div>
-    </div>
-  </div>
+    <app-effective-rules></app-effective-rules>
     <div class="title">Please Select a Difficulty Level</div>
     <div class="boxes-container">
       <div

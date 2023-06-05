@@ -1,7 +1,11 @@
 <div class="container">
   <div class="row difficulty">
     <div class="text">Selected Difficulty: </div>
-    <div class="value">{{difficultyLevel}}</div>
+    <div  matTooltip="View Related Rules"
+          class="value difficulty"
+          (click)="openRulesModal()">
+      {{difficultyLevel}}
+    </div>
   </div>
   <div class="row discarded">
     <div class="text">Discarded:</div>

@@ -14,6 +14,8 @@ import { HowToPlayComponent } from './how-to-play/how-to-play.component';
 import { DifficultySelectionComponent } from './difficulty-selection/difficulty-selection.component';
 import { GameWonModalComponent } from './game-won-modal/game-won-modal.component';
 import {MatDialogModule} from "@angular/material/dialog";
+import { EffectiveRulesComponent } from './difficulty-selection/effective-rules/effective-rules.component';
+import {MatTooltipModule} from "@angular/material/tooltip";
 
 export enum RoutesNames  {
   Home = 'home',
@@ -40,17 +42,18 @@ const routes: Routes = [
     GameMenuComponent,
     HowToPlayComponent,
     DifficultySelectionComponent,
-    GameWonModalComponent
+    GameWonModalComponent,
+    EffectiveRulesComponent
   ],
-    imports: [
-        BrowserModule,
-        CommonModule,
-        DragDropModule,
-        BrowserAnimationsModule,
-        MatDialogModule,
-        RouterModule.forRoot(routes),
-        NgOptimizedImage
-    ],
+  imports: [
+    BrowserModule,
+    CommonModule,
+    DragDropModule,
+    BrowserAnimationsModule,
+    MatDialogModule,
+    RouterModule.forRoot(routes),
+    MatTooltipModule
+  ],
   providers: [],
   bootstrap: [AppComponent]
 })

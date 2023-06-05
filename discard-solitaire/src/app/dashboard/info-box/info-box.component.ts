@@ -1,6 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {difficultyKeys} from "../../models";
 import {ConfigurationService} from "../../configuration.service";
+import {MatDialog} from "@angular/material/dialog";
+import {EffectiveRulesComponent} from "../../difficulty-selection/effective-rules/effective-rules.component";
 
 @Component({
   selector: 'app-info-box',
@@ -25,7 +27,8 @@ export class InfoBoxComponent implements OnInit{
 
   public difficultyLevel: string;
 
-  constructor(private configurationService: ConfigurationService) {
+  constructor(private configurationService: ConfigurationService,
+              private matDialog: MatDialog)  {
   }
 
   public ngOnInit(): void {
@@ -33,4 +36,8 @@ export class InfoBoxComponent implements OnInit{
   }
 
   public largestRun = 0;
+
+  public openRulesModal() {
+    const dialogRef = this.matDialog.open(EffectiveRulesComponent, {data: {isInModal: true}});
+  }
 }

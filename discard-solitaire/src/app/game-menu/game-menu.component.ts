@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import {RoutesNames} from "../app.module";
+import {noop} from "rxjs";
 import {ConfigurationService} from "../configuration.service";
 import {SessionStorageUtil} from "../sessionStorageUtil";
 
@@ -9,7 +10,7 @@ import {SessionStorageUtil} from "../sessionStorageUtil";
   templateUrl: './game-menu.component.html',
   styleUrls: ['./game-menu.component.scss']
 })
-export class GameMenuComponent implements OnInit{
+export class GameMenuComponent implements OnInit {
 
   constructor(private router: Router,
               private configurationService: ConfigurationService) {
@@ -18,7 +19,7 @@ export class GameMenuComponent implements OnInit{
   public ngOnInit(): void {
     this.configurationService.selectedDifficulty = null;
     SessionStorageUtil.reset();
-  }
+  }F
 
   public startGame(): void {
     this.router.navigate([RoutesNames.DifficultySelection]);
@@ -29,6 +30,6 @@ export class GameMenuComponent implements OnInit{
   }
 
   public difficultySelection():void {
-    this.router.navigate([RoutesNames.DifficultySelection])
+    this.router.navigate([RoutesNames.DifficultySelection]).then(noop);
   }
 }
