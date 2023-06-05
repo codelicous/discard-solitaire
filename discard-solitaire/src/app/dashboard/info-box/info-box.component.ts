@@ -38,6 +38,6 @@ export class InfoBoxComponent implements OnInit{
   public largestRun = 0;
 
   public openRulesModal() {
-    const dialogRef = this.matDialog.open(EffectiveRulesComponent, {data: {isInModal: true}});
+    this.matDialog.open(EffectiveRulesComponent, {data: {isInModal: true}});
   }
 }
