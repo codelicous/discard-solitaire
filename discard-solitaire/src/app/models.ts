@@ -40,15 +40,14 @@ export function enumToArrayKeys<T>(enumObject: T): any {
   return Object.values(enumObject as any).filter(v => typeof v === 'string');
 }
 
-export function calcRandomPosition(): number {
-  return  Math.floor(Math.random() * (52));
-}
-
 export interface GameState {
-  deck: Card[][];
-  cardStacks:  Card[][][];
+  deck: Card[];
+  cardStacks:  Card[][];
   moveState: number;
   discarded: number;
+  undoNumber: number,
+  undoRedoMove: number,
+  discardedBeforeDeal: number
 }
 
 export enum DifficultyType  {
@@ -57,5 +56,10 @@ export enum DifficultyType  {
   Normal,
   Hard,
   Hardest
+}
+
+export enum SessionStorageKey {
+  GameState = 'solitaire_gameState',
+  Difficulty = 'solitaire_difficulty'
 }
 export const difficultyKeys = _.invert(DifficultyType);

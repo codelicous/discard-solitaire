@@ -1,9 +1,16 @@
 <div class="stack-container">
   <div class="deck-container" >
-    <div *ngFor="let margin of deckMarginRep()" class="deck-card-margin">
+    <div *ngFor="let margin of deckMarginRep()"
+         class="deck-card-margin">
     </div>
     <ng-container *ngIf="deck.length">
-      <img (click)="dealToStacks()" class="deck-trigger" src="assets/cards-images/card_back.png" alt="empty-stack">
+
+      <img (click)="dealToStacks()"
+           class="deck-trigger"
+           ngSrc="assets/cards-images/card_back.png"
+           height="976"
+           width="686" alt="">
+
     </ng-container>
     <div class="empty-stack-container" [class.visible]="!deck.length">
       <div
@@ -12,12 +19,11 @@
     </div>
 
     <app-info-box
-      [discarded]="discarded"
+      [discarded]="calcDiscarded()"
       [cardsLeft]="cardsLeft()"
-      [largestRunSetter]="discardedBeforeDeal">
+      [largestRunSetter]="gameState.discardedBeforeDeal">
     </app-info-box>
     <app-game-controller
-      (onRedo)="reDoState()"
       (onUndo)="undoGameState()"
       (onReset)="resetGame()">
     </app-game-controller>

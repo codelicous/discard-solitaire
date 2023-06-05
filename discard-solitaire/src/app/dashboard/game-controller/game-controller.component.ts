@@ -1,5 +1,6 @@
 import {Component, EventEmitter, Output} from '@angular/core';
 import {Router} from "@angular/router";
+import {SessionStorageUtil} from "../../sessionStorageUtil";
 
 @Component({
   selector: 'app-game-controller',
@@ -8,7 +9,6 @@ import {Router} from "@angular/router";
 })
 export class GameControllerComponent {
   @Output() public onUndo = new EventEmitter<never>();
-  @Output() public onRedo = new EventEmitter<never>();
   @Output() public onReset = new EventEmitter<never>();
 
   constructor(private router: Router) {
@@ -17,13 +17,14 @@ export class GameControllerComponent {
   public undo(): void {
     this.onUndo.emit();
   }
-  public reDo(): void{
-    this.onRedo.emit();
-  }
+
   public reset(): void {
     this.onReset.emit();
   }
   public mainMenu(): void {
+    SessionStorageUtil.reset();
+    SessionStorageUtil.saveGameState(null );
+    SessionStorageUtil.saveGameDifficulty(null);
     this.router.navigate(['home']);
   }
 }

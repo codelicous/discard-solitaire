@@ -58,3 +58,16 @@ $card-border: 1px solid black;
     display: none;
   }
 }
+.card-margin.is-selected {
+  position: relative;
+}
+.card-margin.is-selected::after {
+  position: absolute;
+  bottom: 0;
+  content: '';
+  height: 4.5px;
+  width: 100%;
+  background-color: #048404;
+  opacity: 0.93
+}
+

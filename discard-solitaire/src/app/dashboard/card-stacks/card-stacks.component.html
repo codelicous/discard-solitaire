@@ -11,18 +11,22 @@
        [cdkDropListConnectedTo]="getConnectedToDropLists(i)"
   >
     <ng-container *ngIf="cardStacks[i]">
-      <div *ngFor="let margin of cardStacks[i].slice(1)" #cardMargins class="card-margin stack-num-{{i}}">
+      <div *ngFor="let margin of cardStacks[i].slice(1); let last = last"
+           #cardMargins
+           class="card-margin stack-num-{{i}}"
+           [class.is-selected]="isCardInStackSelected(i, last )"
+      >
       </div>
     </ng-container>
     <div cdkDrag (cdkDragStarted)="shiftCard($event,i)">
-      <img class="top-deck"
+      <img class="top-deck _{{i}}"
            *ngIf="cardStacks[i][0] && !(movedIndex === i) "
            #cardStack
            src="{{cardStacks[i][0]?.img}}"
            width="200"
            height="200"
            (click)="triggerAction($event, i)"
-           alt="empty-stack">
+           alt="">
       <div class="top-deck"
            *ngIf="!cardStacks[i][0] || movedIndex === i">
       </div>
@@ -30,13 +34,13 @@
     </div>
     <div *ngIf="movedIndex === i">
       <div class="replacer">
-        <div *ngFor="let margin of cardStacks[i]"
+        <div *ngFor="let margin of cardStacks[i]; let last = last"
              class="card-margin replacer-margin  stack-num-{{i}}">
         </div>
         <img
           *ngIf="cardStacks[i][0]"
           class="replacer-image"
-          src="{{cardStacks[i][0]?.img}}" alt="vafsa">
+          src="{{cardStacks[i][0]?.img}}" alt="">
       </div>
     </div>
   </div>

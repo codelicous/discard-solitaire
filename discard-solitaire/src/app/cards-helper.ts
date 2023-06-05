@@ -1,5 +1,4 @@
 import {
-  calcRandomPosition,
   Card,
   CardType,
   cardValue,
@@ -7,8 +6,7 @@ import {
   enumToArrayKeys,
   enumToArrayNumericValues
 } from './models';
-
-
+import { shuffle } from 'lodash-es';
 export class CardsHelper {
 
   private readonly cardDeck: Card[];
@@ -26,26 +24,8 @@ export class CardsHelper {
     ).flat();
   }
 
-  private shuffle(deck: Card[]): Card[] {
-    let newDeck = new Array<Card>(52);
-    deck.forEach((card, index) => {
-      let newPosition = this.getNewPosition(index, newDeck);
-      newDeck[newPosition] = card;
-    });
-    return newDeck;
-  }
-
-  private getNewPosition(oldPosition: number, newDeck: Card[]): number {
-    let newPosition = calcRandomPosition();
-
-    if (oldPosition && newPosition && (oldPosition === newPosition) || newDeck[newPosition]) {
-      return this.getNewPosition(oldPosition, newDeck);
-    }
-    return newPosition;
-  }
-
   public getDeck(): Card[] {
-    return this.shuffle(this.cardDeck);
+    return shuffle(this.cardDeck);
   }
 
   private static getImgPath(type: any, value: number ): string {

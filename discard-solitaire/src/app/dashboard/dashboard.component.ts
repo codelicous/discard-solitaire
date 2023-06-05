@@ -18,7 +18,7 @@ import {
   UtilClasses
 } from "../models";
 
-import _ from 'lodash-es';
+import {cloneDeep} from 'lodash-es';
 import {
   CdkDragDrop,
   CdkDragExit,
@@ -29,9 +29,10 @@ import {ConfigurationService} from "../configuration.service";
 import {MatDialog} from "@angular/material/dialog";
 import {GameWonModalComponent} from "../game-won-modal/game-won-modal.component";
 import {take, takeUntil, tap} from "rxjs/operators";
-import { Subject} from "rxjs";
+import {Subject, Subscription} from "rxjs";
 import {DialogDestination} from "../game-won-modal/models";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
+import {SessionStorageUtil} from "../sessionStorageUtil";
 
 @Component({
   selector: 'app-dashboard',
@@ -45,10 +46,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   @HostListener('window:keydown', ['$event'])
   public onKeyPress(event: KeyboardEvent) {
-    if (event.key === 'Z' && event.ctrlKey && event.shiftKey) {
-      this.reDoState();
-      return;
-    }
     if (event.key === 'z' && event.ctrlKey === true) {
       this.undoGameState();
     }
@@ -56,38 +53,45 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   helper: CardsHelper = new CardsHelper();
   public deck: Card[] = this.helper.getDeck();
-  public undoNumber = 0;
   public discarded = 0;
-  public undoRedoMove = 0;
   public cardStacks: Card[][] = [[], [], [], []];
   public cardImage0;
   public cardImage1;
   public cardImage2;
   public cardImage3;
   private componentDestroyed$ = new Subject();
-  private gameState: GameState = {
+  public gameState: GameState = {
     deck: [],
     cardStacks: [],
     moveState: 0,
-    discarded: 0
+    discarded: 0,
+    undoNumber: 0,
+    undoRedoMove: 0,
+    discardedBeforeDeal: 0
+  }
+  private previousGameState: GameState = {
+    deck: [],
+    cardStacks: [],
+    moveState: 0,
+    discarded: 0,
+    undoNumber: 0,
+    undoRedoMove: 0,
+    discardedBeforeDeal: 0
   }
   public movedIndex: number;
-  public discardedBeforeDeal = 0;
   public movedCard: Card;
 
   constructor(private renderer: Renderer2,
               private router: Router,
+              private route: ActivatedRoute,
               private matDialog: MatDialog,
               private configurationService: ConfigurationService,
               private changeDetectorRef: ChangeDetectorRef) {
   }
 
 
-
   public ngOnInit(): void {
-    this.deck = this.helper.getDeck();
-    this.dealToStacks(true);
-    this.setGameDifficulty();
+    this.stateLoaderSubscription();
   }
 
 
@@ -100,7 +104,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       if (this.noCardToFillEmptyStack()) {
         this.fillEmptyStacks();
         this.updateGameState();
-        this.discardedBeforeDeal = 0;
+        this.gameState.discardedBeforeDeal = 0;
         this.checkGameState()
         return;
       } else {
@@ -108,14 +112,39 @@ export class DashboardComponent implements OnInit, OnDestroy {
       }
     }
 
-    this.cardStacks = this.cardStacks.map(stack => this.deck.length && [this.deck.pop(), ...stack] || stack);
+    this.cardStacks = this.cardStacks.map(stack => this.deck.length &&
+      [this.deck.pop(), ...stack] || stack);
     this.updateTopCardImages();
     this.updateGameState();
-    this.discardedBeforeDeal = 0;
+
+    if (initialDeal) {
+      this.gameState.discardedBeforeDeal = 999;
+      this.gameState.discardedBeforeDeal = 0;
+    } else {
+      this.gameState.discardedBeforeDeal = 0;
+    }
+
   }
 
   public discard(stack: Card[]): void {
     stack.pop();
+  }
+
+  private stateLoaderSubscription(): Subscription {
+    return this.route.queryParams.pipe(
+      take(1),
+      takeUntil(this.componentDestroyed$),
+      tap(() => {
+        if (this.configurationService.savedGameState && this.configurationService.selectedDifficulty) {
+          this.gameState = this.configurationService.savedGameState;
+          this.deck = this.gameState.deck;
+          this.cardStacks = this.gameState.cardStacks;
+          this.calcDiscarded();
+        } else {
+          this.deck = this.helper.getDeck();
+          this.dealToStacks(true);
+        }
+      })).subscribe();
   }
 
   private updateTopCardImages() {
@@ -147,7 +176,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     const otherCards = this.cardStacks.map(stack => stack[0]).filter(card => card?.img !== currentCard.img);
-    return !this.isKing(currentCard) &&(
+    return !this.isKing(currentCard) && (
       this.hasHigherCardSameType(currentCard, otherCards) ||
       (this.configurationService.selectedDifficulty < DifficultyType.Hardest && this.cardBehindSameKindHigher(this.cardStacks[i])) ||
       (this.configurationService.selectedDifficulty === DifficultyType.Easy && otherCards.some(card => card?.value === currentCard?.value)));
@@ -159,8 +188,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   private updateCardImageAfterDiscard(i: number): void {
     this[`cardImage${i}`] = this.cardStacks[i][0]?.img;
-    this.discarded++;
-    this.discardedBeforeDeal++;
+    this.calcDiscarded()
+    this.gameState.discardedBeforeDeal++;
   }
 
   public drop($event: CdkDragDrop<any, any>, i: number): void {
@@ -180,6 +209,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     );
     this.cardStacks = [...this.cardStacks];
     this.checkGameState();
+    this.updateGameState();
   }
 
 
@@ -216,11 +246,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   public unMarkAllCards(): void {
-    [...this.cardStackRefs, ...this.cardMarginsRefs].forEach(ref => this.renderer.removeClass(ref.nativeElement, UtilClasses.Marked));
+    [...Array.from(document.querySelectorAll('.top-deck')),
+      ...Array.from(document.querySelectorAll('.card-margin'))].forEach(ref => this.renderer.removeClass(ref, UtilClasses.Marked));
   }
 
   public ngOnDestroy(): void {
     this.componentDestroyed$.next();
+    this.componentDestroyed$.complete();
   }
 
   private markElement(element: HTMLElement, i: number): void {
@@ -260,38 +292,33 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   private updateGameState(): void {
-    this.gameState.deck.push(_.cloneDeep(this.deck));
-    this.gameState.cardStacks.push(_.cloneDeep(this.cardStacks));
+    this.previousGameState.deck = cloneDeep(this.gameState.deck);
+    this.gameState.deck = cloneDeep(this.deck);
+    this.previousGameState.cardStacks = cloneDeep(this.gameState.cardStacks);
+    this.gameState.cardStacks = cloneDeep(this.cardStacks);
+    this.previousGameState.moveState = cloneDeep(this.gameState.moveState)
     this.gameState.moveState += 1;
+    this.previousGameState.undoNumber = this.gameState.undoNumber;
+    this.gameState.undoNumber = 0;
+
+    SessionStorageUtil.saveGameState(this.gameState);
   }
 
   public undoGameState(): void {
-    if (this.undoNumber == 5) {
+    if (this.gameState.undoNumber !== 0) {
       return;
     }
 
-    this.deck = this.gameState.deck[this.gameState.moveState - 2];
-    this.cardStacks = this.gameState.cardStacks[this.gameState.moveState - 2];
+    this.deck = cloneDeep(this.previousGameState.deck);
+    this.cardStacks = cloneDeep(this.previousGameState.cardStacks)
+
     this.gameState.moveState -= 1;
     this.discarded = this.calcDiscarded();
     this.updateTopCardImages();
     this.changeDetectorRef.detectChanges();
-    this.undoNumber += 1;
-    this.undoRedoMove +=1;
-  }
-
-  public reDoState(): void {
-    if (!this.undoNumber) {
-      return;
-    }
-    this.deck = this.gameState.deck[this.gameState.moveState];
-    this.cardStacks = this.gameState.cardStacks[this.gameState.moveState];
-    this.gameState.moveState += 1;
-    this.discarded = this.calcDiscarded();
-    this.updateTopCardImages();
-    this.changeDetectorRef.detectChanges();
-    this.undoNumber -= 1;
-    this.undoRedoMove += 1;
+    this.gameState.undoNumber += 1;
+    this.gameState.undoRedoMove += 1;
+    SessionStorageUtil.saveGameState(this.gameState);
   }
 
   public resetGame(): void {
@@ -299,36 +326,26 @@ export class DashboardComponent implements OnInit, OnDestroy {
       deck: [],
       cardStacks: [],
       moveState: 0,
-      discarded: 0
+      discarded: 0,
+      undoRedoMove: 0,
+      undoNumber: 0,
+      discardedBeforeDeal: 999
     };
     this.discarded = 0;
-    this.undoNumber = 0;
+    this.gameState.undoNumber = 0;
     this.cardStacks = [[], [], [], []];
     this.cardImage1 = null;
     this.cardImage0 = null;
     this.cardImage3 = null;
     this.cardImage2 = null;
     this.movedCard = null;
-    this.changeDetectorRef.detectChanges();
+
+    SessionStorageUtil.reset();
+    this.calcDiscarded();
+
     this.deck = this.helper.getDeck();
     this.dealToStacks(true);
-  }
-
-  private setGameDifficulty(): void {
-    switch (this.configurationService.selectedDifficulty) {
-      case DifficultyType.Easy: {
-        break;
-      }
-      case DifficultyType.Normal: {
-        break;
-      }
-      case DifficultyType.Hard: {
-        break;
-      }
-      default: {
-
-      }
-    }
+    this.changeDetectorRef.detectChanges();
   }
 
   private isKing(currentCard: Card): boolean {
@@ -336,45 +353,47 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   private checkGameState(): void {
-    if(this.gameWon()) {
+    if (this.gameWon()) {
       this.openWinnerModal();
       return;
     }
   }
 
   private gameWon(): boolean {
-    return (this.discarded === 48) &&
+    return (this.calcDiscarded() === 48) &&
       this.cardStacks.every(stack => (stack.length === 1) &&
         (stack[0].value === cardValue.king));
   }
 
   private openWinnerModal(): void {
-    const score  = this.calcScore();
+    const score = this.calcScore();
 
-    const dialogRef = this.matDialog.open(GameWonModalComponent,{ disableClose: true, data: { score }});
+    const dialogRef = this.matDialog.open(GameWonModalComponent, {disableClose: true, data: {score}});
     dialogRef.afterClosed()
       .pipe(
-      take(1),
-      takeUntil(this.componentDestroyed$),
-      tap(this.navigateFromDialog.bind(this))
+        take(1),
+        takeUntil(this.componentDestroyed$),
+        tap(this.navigateFromDialog.bind(this))
       ).subscribe();
   }
 
-  private navigateFromDialog( destination: DialogDestination){
+  private navigateFromDialog(destination: DialogDestination): void {
     switch (destination) {
       case DialogDestination.Home:
+        this.resetGame();
         this.router.navigate(['home']);
+        SessionStorageUtil.reset();
         break;
       case DialogDestination.NewGame:
         this.resetGame();
     }
   }
 
-  private calcDiscarded(): number {
+  public calcDiscarded(): number {
     return 52 - this.cardsLeft() - this.deck.length;
   }
 
   private calcScore(): number {
-    return (640000 - 100 * this.undoRedoMove) * this.configurationService.selectedDifficulty;
+    return (640000 - 100 * this.gameState.undoRedoMove) * this.configurationService.selectedDifficulty;
   }
 }
