@@ -157,8 +157,11 @@ $brown: #8b4513;
     border-color: $brown;
     &.continue {
       margin-right: 15px;
+      &:disabled {
+        opacity: 0.6;
+      }
     }
-    &:hover {
+    &:hover:not(:disabled) {
       font-weight: bold;
       border-width: 4px;
     }

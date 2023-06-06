@@ -5,6 +5,6 @@ import {DifficultyType, GameState} from "./models";
   providedIn: 'root'
 })
 export class ConfigurationService {
- public selectedDifficulty: DifficultyType = DifficultyType.Easy;
+ public selectedDifficulty: DifficultyType;
  public savedGameState: GameState;
 }

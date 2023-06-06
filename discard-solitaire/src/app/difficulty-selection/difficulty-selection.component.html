@@ -71,6 +71,7 @@
   <div class="buttons-container">
     <button
       class="continue"
+      [disabled]="!configurationService.selectedDifficulty"
       (click)="navigate(gameRoute)">
       Start Games
     </button>
