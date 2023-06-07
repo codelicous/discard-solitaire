@@ -1,0 +1,28 @@
+@import '../../../styles';
+:host {
+  display: flex;
+  height: 100%;
+}
+.rules-in-effect-container {
+  margin-bottom: auto;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  width: 100%;
+  .rules-in-effect-title {
+    font-size: 32px;
+    text-decoration: underline;
+    color: $brown;
+  }
+}
+.rule {
+  visibility: hidden;
+  margin-bottom: 15px;
+  &.visible {
+    visibility: visible;
+  }
+  .title {
+    margin-bottom: 0;
+    text-decoration: underline;
+  }
+}
