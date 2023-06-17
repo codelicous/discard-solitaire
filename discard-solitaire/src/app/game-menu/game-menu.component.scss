@@ -17,12 +17,13 @@
   flex-direction: column;
   padding: 10px;
 
-  button {
+  .btn {
     height: 50px;
     font-size: 20px;
     margin-bottom: 15px;
     &:hover {
       background-color: beige;
+      cursor: pointer;
     }
   }
 }

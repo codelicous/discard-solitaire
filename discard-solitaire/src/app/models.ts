@@ -32,12 +32,12 @@ export const cardValue = {
 }
 export const cardValueToCardName = _.invert(cardValue);
 
-export function enumToArrayNumericValues<T>(enumObject: T): any {
-  return Object.values(enumObject as any).filter(v => !(typeof v === 'string'));
+export function enumToArrayNumericValues<T>(enumObject: T): number[] {
+  return Object.values(enumObject as any).filter(v => !(typeof v === 'string')) as number[];
 }
 
-export function enumToArrayKeys<T>(enumObject: T): any {
-  return Object.values(enumObject as any).filter(v => typeof v === 'string');
+export function enumToArrayKeys<T>(enumObject: T): string[] {
+  return Object.values(enumObject as any).filter(v => typeof v === 'string') as string[];
 }
 
 export interface GameState {
@@ -63,3 +63,8 @@ export enum SessionStorageKey {
   Difficulty = 'solitaire_difficulty'
 }
 export const difficultyKeys = _.invert(DifficultyType);
+
+export  enum DataBaseConfigData {
+  collectionName = 'discard-solitaire',
+
+}

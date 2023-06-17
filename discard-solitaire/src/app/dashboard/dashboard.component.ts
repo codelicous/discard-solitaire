@@ -33,6 +33,7 @@ import {Subject, Subscription} from "rxjs";
 import {DialogDestination} from "../game-won-modal/models";
 import {ActivatedRoute, Router} from "@angular/router";
 import {SessionStorageUtil} from "../sessionStorageUtil";
+import {FirebaseService} from "../firebase.service";
 
 @Component({
   selector: 'app-dashboard',
@@ -86,12 +87,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
               private route: ActivatedRoute,
               private matDialog: MatDialog,
               private configurationService: ConfigurationService,
+              private firebaseService: FirebaseService,
               private changeDetectorRef: ChangeDetectorRef) {
   }
 
 
   public ngOnInit(): void {
     this.stateLoaderSubscription();
+    this.firebaseService.getAllScores().then((score) =>{
+      console.log('score is');
+      console.log(score)});
   }
 
 

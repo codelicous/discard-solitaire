@@ -16,12 +16,14 @@ import { GameWonModalComponent } from './game-won-modal/game-won-modal.component
 import {MatDialogModule} from "@angular/material/dialog";
 import { EffectiveRulesComponent } from './difficulty-selection/effective-rules/effective-rules.component';
 import {MatTooltipModule} from "@angular/material/tooltip";
+import { HighScoresComponent } from './high-scores/high-scores.component';
 
 export enum RoutesNames  {
   Home = 'home',
   Game = 'game',
   HowToPlay = 'how-to-play',
-  DifficultySelection = 'difficulty-selection'
+  DifficultySelection = 'difficulty-selection',
+  HighScores = 'high-scores'
 }
 
 const routes: Routes = [
@@ -30,6 +32,7 @@ const routes: Routes = [
   { path: RoutesNames.Game, component: DashboardComponent },
   { path: RoutesNames.HowToPlay, component: HowToPlayComponent },
   { path: RoutesNames.DifficultySelection, component: DifficultySelectionComponent },
+  { path: RoutesNames.HighScores , component: HighScoresComponent }
 ];
 
 @NgModule({
@@ -43,7 +46,8 @@ const routes: Routes = [
     HowToPlayComponent,
     DifficultySelectionComponent,
     GameWonModalComponent,
-    EffectiveRulesComponent
+    EffectiveRulesComponent,
+    HighScoresComponent
   ],
   imports: [
     BrowserModule,

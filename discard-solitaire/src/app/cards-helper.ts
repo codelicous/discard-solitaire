@@ -25,6 +25,7 @@ export class CardsHelper {
   }
 
   public getDeck(): Card[] {
+    // fisher yates shuffle algorithm
     return shuffle(this.cardDeck);
   }
 

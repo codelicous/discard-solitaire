@@ -22,14 +22,19 @@ export class GameMenuComponent implements OnInit {
   }F
 
   public startGame(): void {
-    this.router.navigate([RoutesNames.DifficultySelection]);
+    this.handleNavigation(RoutesNames.DifficultySelection);
   }
 
   public howToPlay(): void {
     window.open('http://www.solitairecentral.com/rules/IdiotsDelight.html', '_blank', 'noopener,noreferrer');
   }
+  public navigateToHighScores() {
+    this.router.navigate([RoutesNames.HighScores])
+  }
 
-  public difficultySelection():void {
-    this.router.navigate([RoutesNames.DifficultySelection]).then(noop);
+  private handleNavigation(routeName: RoutesNames): void {
+    this.router.navigate([routeName])
+      .then(noop)
+      .catch(console.log)
   }
 }
