@@ -17,6 +17,7 @@ import {MatDialogModule} from "@angular/material/dialog";
 import { EffectiveRulesComponent } from './difficulty-selection/effective-rules/effective-rules.component';
 import {MatTooltipModule} from "@angular/material/tooltip";
 import { HighScoresComponent } from './high-scores/high-scores.component';
+import {MatTableModule} from "@angular/material/table";
 
 export enum RoutesNames  {
   Home = 'home',
@@ -56,7 +57,8 @@ const routes: Routes = [
     BrowserAnimationsModule,
     MatDialogModule,
     RouterModule.forRoot(routes),
-    MatTooltipModule
+    MatTooltipModule,
+    MatTableModule
   ],
   providers: [],
   bootstrap: [AppComponent]

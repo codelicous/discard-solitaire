@@ -94,9 +94,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.stateLoaderSubscription();
-    this.firebaseService.getAllScores().then((score) =>{
-      console.log('score is');
-      console.log(score)});
   }
 
 

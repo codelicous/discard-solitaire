@@ -1,0 +1,25 @@
+@use '@angular/material' as mat;
+@import "src/styles";
+
+
+@include mat.core();
+
+:host {
+  background-color: $background-green;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.table-container {
+  .title {
+    display: flex;
+    text-align: center;
+    font-size: 36px;
+    font-weight: bold;
+    justify-content: center;
+    margin-bottom: 50px;
+  }
+  display: flex;
+  flex-direction: column;
+  margin: 200px 33%;
+}

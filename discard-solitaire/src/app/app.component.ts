@@ -24,7 +24,6 @@ export class AppComponent implements OnInit {
   private checkGameState(): void {
     const difficulty = SessionStorageUtil.getGameDifficulty();
     const gameState = SessionStorageUtil.getGameState();
-
     if (gameState && difficulty) {
       this.configurationService.selectedDifficulty = difficulty;
       this.configurationService.savedGameState = gameState;

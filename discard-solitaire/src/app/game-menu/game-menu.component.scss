@@ -1,9 +1,11 @@
+@import 'src/styles';
+
 :host {
   display: flex;
   height: 100%;
   flex-direction: column;
   align-items: center;
-  background-color: #008300;
+  background-color: $background-green;
   flex: 1;
   position: relative;
 }

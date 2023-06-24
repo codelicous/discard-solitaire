@@ -1,7 +1,7 @@
-$brown: #8b4513;
+@import "styles";
 
 :host {
-  background-color: #008300;
+  background-color: $background-green;
   display: flex;
   flex: 1;
   height: 100%;

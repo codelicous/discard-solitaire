@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { initializeApp } from 'firebase/app';
-import {addDoc, getFirestore, collection,  CollectionReference, DocumentData, getDocs, QuerySnapshot,Query } from 'firebase/firestore';
-import {Score} from "./high-scores/models";
+import {addDoc, getFirestore, collection,  CollectionReference, DocumentData, getDocs, Timestamp } from 'firebase/firestore';
+import {CloudFireScore, Score} from "./high-scores/models";
 import {DataBaseConfigData} from "./models";
 
 
@@ -40,8 +40,8 @@ export class FirebaseService {
 
   public getAllScores(): Promise<Score[]> {
     return getDocs(this.getCollectionReference()).then(snapshot=> {
-    const scores: Score[] = snapshot.docs.map(doc => doc.data() as Score)
-      return scores;
+    const scores: CloudFireScore[] = snapshot.docs.map(doc => doc.data() as CloudFireScore)
+      return scores.map(score => ({...score, recordDate:  new Timestamp(score.recordDate.seconds, score.recordDate.nanoseconds).toDate()}));
     });
 
   };

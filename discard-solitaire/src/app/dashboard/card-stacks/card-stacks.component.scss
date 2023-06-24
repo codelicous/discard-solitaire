@@ -1,3 +1,5 @@
+@import 'styles';
+
 $card-height: 200px;
 $card-width: 143px;
 $card-border: 1px solid black;
@@ -67,7 +69,7 @@ $card-border: 1px solid black;
   content: '';
   height: 4.5px;
   width: 100%;
-  background-color: #048404;
+  background-color: $background-green;
   opacity: 0.93
 }
 
