@@ -3,7 +3,7 @@ import {Score} from "./models";
 import { FirebaseService } from "../firebase.service";
 import {from, Observable} from "rxjs";
 import {map, tap} from "rxjs/operators";
-import _ from 'lodash';
+import _ from 'lodash-es';
 @Component({
   selector: 'app-high-scores',
   templateUrl: './high-scores.component.html',
