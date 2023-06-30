@@ -8,18 +8,18 @@ import {SessionStorageUtil} from "../../sessionStorageUtil";
   styleUrls: ['./game-controller.component.scss']
 })
 export class GameControllerComponent {
-  @Output() public onUndo = new EventEmitter<never>();
-  @Output() public onReset = new EventEmitter<never>();
+  @Output() public undoEmitter = new EventEmitter<never>();
+  @Output() public resetEmitter = new EventEmitter<never>();
 
   constructor(private router: Router) {
   }
 
   public undo(): void {
-    this.onUndo.emit();
+    this.undoEmitter.emit();
   }
 
   public reset(): void {
-    this.onReset.emit();
+    this.resetEmitter.emit();
   }
   public mainMenu(): void {
     SessionStorageUtil.reset();

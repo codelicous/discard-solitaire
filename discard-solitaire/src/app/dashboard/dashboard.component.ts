@@ -9,14 +9,14 @@ import {
   Renderer2,
   ViewChildren
 } from '@angular/core';
-import {CardsHelper} from "../cards-helper";
+import {CardsHelper} from '../cards-helper';
 import {
   Card,
   cardValue,
   DifficultyType,
   GameState,
   UtilClasses
-} from "../models";
+} from '../models';
 
 import {cloneDeep} from 'lodash-es';
 import {
@@ -24,16 +24,16 @@ import {
   CdkDragExit,
   CdkDragStart,
   transferArrayItem
-} from "@angular/cdk/drag-drop";
-import {ConfigurationService} from "../configuration.service";
-import {MatDialog} from "@angular/material/dialog";
-import {GameWonModalComponent} from "../game-won-modal/game-won-modal.component";
-import {take, takeUntil, tap} from "rxjs/operators";
-import {Subject, Subscription} from "rxjs";
-import {DialogDestination} from "../game-won-modal/models";
-import {ActivatedRoute, Router} from "@angular/router";
-import {SessionStorageUtil} from "../sessionStorageUtil";
-import {FirebaseService} from "../firebase.service";
+} from '@angular/cdk/drag-drop';
+import {ConfigurationService} from '../configuration.service';
+import {MatDialog} from '@angular/material/dialog';
+import {GameWonModalComponent} from '../game-won-modal/game-won-modal.component';
+import {take, takeUntil, tap} from 'rxjs/operators';
+import {Subject, Subscription} from 'rxjs';
+import {DialogDestination} from '../game-won-modal/models';
+import {ActivatedRoute, Router} from '@angular/router';
+import {SessionStorageUtil} from '../sessionStorageUtil';
+import {FirebaseService} from '../firebase.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -156,7 +156,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.cardImage3 = this.cardStacks[3][0]?.img;
   }
 
-  public deckMarginRep(): any[] {
+  public deckMarginRep(): number[] {
     return this.deck.length >= 3 ? [1, 2] : this.deck.length > 1 ? [1] : [];
   }
 
@@ -194,12 +194,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.gameState.discardedBeforeDeal++;
   }
 
-  public drop($event: CdkDragDrop<any, any>, i: number): void {
+  public drop($event: CdkDragDrop<any>, i: number): void {
     this.movedIndex = null;
     if ($event.previousContainer === $event.container) {
       this.endDrag(i);
       return;
     }
+
     this.cardStacks[$event.container.data].unshift(this.movedCard);
     this.movedCard = null;
     this.unMarkAllCards();

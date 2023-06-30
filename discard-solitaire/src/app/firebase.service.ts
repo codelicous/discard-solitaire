@@ -44,7 +44,7 @@ export class FirebaseService {
       return scores.map(score => ({...score, recordDate:  new Timestamp(score.recordDate.seconds, score.recordDate.nanoseconds).toDate()}));
     });
 
-  };
+  }
 
   private isValidScore(score: Score): boolean {
     return score.name &&

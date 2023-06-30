@@ -9,7 +9,7 @@ import {DialogData, DialogDestination} from "./models";
 })
 
 export class GameWonModalComponent {
-  @Input() score: number = 0;
+  @Input() score = 0;
   readonly destination = DialogDestination;
   constructor(public dialogRef: MatDialogRef<GameWonModalComponent>,
               @Inject(MAT_DIALOG_DATA) public data: DialogData) {

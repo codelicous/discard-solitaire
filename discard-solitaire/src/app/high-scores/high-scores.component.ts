@@ -21,7 +21,7 @@ export class HighScoresComponent implements OnInit {
   }
 
 
-  private initScores(scores: Score[]): any[] {
+  private initScores(scores: Score[]): Score[] {
     return scores;
   }
 }

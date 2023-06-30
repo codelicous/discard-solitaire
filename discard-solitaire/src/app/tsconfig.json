@@ -2,7 +2,15 @@
   "compilerOptions": {
     "experimentalDecorators": true,
     "module": "commonjs",
+    "paths": {
+      "*": ["src/*"]
+    },
     "target": "es2015",
+    "lib": [
+      "es2015",
+      "dom",
+      "es2019" // or any other ECMAScript version you need
+    ],
     "sourceMap": true
   },
   "exclude": [

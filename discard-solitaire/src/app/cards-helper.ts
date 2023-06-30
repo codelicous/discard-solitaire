@@ -16,7 +16,7 @@ export class CardsHelper {
   }
 
    private generateDeck(): Card[] {
-    return enumToArrayNumericValues(CardType).map((type:number) => enumToArrayNumericValues(cardValue).map((value:number) => ({
+    return enumToArrayNumericValues(CardType).map((type: number) => enumToArrayNumericValues(cardValue).map((value: number) => ({
       type,
       value,
       isShown: false,
@@ -29,7 +29,7 @@ export class CardsHelper {
     return shuffle(this.cardDeck);
   }
 
-  private static getImgPath(type: any, value: number ): string {
+  private static getImgPath(type: number, value: number ): string {
     return `./assets/cards-images/${cardValueToCardName[value]}_${enumToArrayKeys(CardType)[type].toLowerCase()}.png`;
   }
 }

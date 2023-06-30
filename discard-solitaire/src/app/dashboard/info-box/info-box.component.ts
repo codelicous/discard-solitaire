@@ -23,7 +23,7 @@ export class InfoBoxComponent implements OnInit{
     if (currentValue > this.largestRun) {
       this.largestRun = currentValue
     }
-  };
+  }
 
   public difficultyLevel: string;
 
