@@ -1,18 +1,20 @@
-import {Component, OnInit} from '@angular/core';
-import {Score} from "./models";
+import { Component, OnInit } from '@angular/core';
+import { Score } from "./models";
 import { FirebaseService } from "../firebase.service";
-import {from, Observable} from "rxjs";
-import {map, tap} from "rxjs/operators";
+import { from, Observable } from "rxjs";
+import { map, tap } from "rxjs/operators";
 import _ from 'lodash-es';
 @Component({
   selector: 'app-high-scores',
   templateUrl: './high-scores.component.html',
-  styleUrls: ['./high-scores.component.scss']
+  styleUrls: [ './high-scores.component.scss' ]
 })
 export class HighScoresComponent implements OnInit {
 
   public tableData$: Observable<Score[]>
-  public displayedColumns = ['name', 'score', 'recordDate'] ;
+  public displayedColumns = [ 'name',
+    'score',
+    'recordDate' ] ;
   constructor(private fireBaseService: FirebaseService) {
   }
   ngOnInit(): void {

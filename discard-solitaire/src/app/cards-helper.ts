@@ -15,12 +15,12 @@ export class CardsHelper {
     this.cardDeck = this.generateDeck();
   }
 
-   private generateDeck(): Card[] {
+  private generateDeck(): Card[] {
     return enumToArrayNumericValues(CardType).map((type: number) => enumToArrayNumericValues(cardValue).map((value: number) => ({
       type,
       value,
       isShown: false,
-      img: CardsHelper.getImgPath(type, value)}))
+      img: CardsHelper.getImgPath(type, value) }))
     ).flat();
   }
 

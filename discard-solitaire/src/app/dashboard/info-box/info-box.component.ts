@@ -1,13 +1,13 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {difficultyKeys} from "../../models";
-import {ConfigurationService} from "../../configuration.service";
-import {MatDialog} from "@angular/material/dialog";
-import {EffectiveRulesComponent} from "../../difficulty-selection/effective-rules/effective-rules.component";
+import { Component, Input, OnInit } from '@angular/core';
+import { difficultyKeys } from "../../models";
+import { ConfigurationService } from "../../configuration.service";
+import { MatDialog } from "@angular/material/dialog";
+import { EffectiveRulesComponent } from "../../difficulty-selection/effective-rules/effective-rules.component";
 
 @Component({
   selector: 'app-info-box',
   templateUrl: './info-box.component.html',
-  styleUrls: ['./info-box.component.scss']
+  styleUrls: [ './info-box.component.scss' ]
 })
 export class InfoBoxComponent implements OnInit{
 
@@ -38,6 +38,6 @@ export class InfoBoxComponent implements OnInit{
   public largestRun = 0;
 
   public openRulesModal() {
-    this.matDialog.open(EffectiveRulesComponent, {panelClass: 'show-rules-container'});
+    this.matDialog.open(EffectiveRulesComponent, { panelClass: 'show-rules-container' });
   }
 }

@@ -10,7 +10,7 @@ describe('HighScoresComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [ HighScoresComponent ]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(HighScoresComponent);
     component = fixture.componentInstance;

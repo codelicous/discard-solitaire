@@ -1,14 +1,14 @@
-import {Component} from '@angular/core';
-import {difficultyKeys, DifficultyType} from "../models";
-import {ConfigurationService} from "../configuration.service";
-import {RoutesNames} from "../app.module";
-import {Router} from "@angular/router";
-import {SessionStorageUtil} from "../sessionStorageUtil";
+import { Component } from '@angular/core';
+import { difficultyKeys, DifficultyType } from "../models";
+import { ConfigurationService } from "../configuration.service";
+import { RoutesNames } from "../app.module";
+import { Router } from "@angular/router";
+import { SessionStorageUtil } from "../sessionStorageUtil";
 
 @Component({
   selector: 'app-difficulty-selection',
   templateUrl: './difficulty-selection.component.html',
-  styleUrls: ['./difficulty-selection.component.scss']
+  styleUrls: [ './difficulty-selection.component.scss' ]
 })
 export class DifficultySelectionComponent {
   public readonly difficultTypeEnum = DifficultyType;
@@ -27,6 +27,6 @@ export class DifficultySelectionComponent {
   public navigate(route: RoutesNames.Home | RoutesNames.Game): void {
 
     SessionStorageUtil.saveGameDifficulty(this.configurationService.selectedDifficulty);
-    this.router.navigate([route]);
+    this.router.navigate([ route ]);
   }
 }

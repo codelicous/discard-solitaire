@@ -1,11 +1,11 @@
-import {Component, EventEmitter, Output} from '@angular/core';
-import {Router} from "@angular/router";
-import {SessionStorageUtil} from "../../sessionStorageUtil";
+import { Component, EventEmitter, Output } from '@angular/core';
+import { Router } from "@angular/router";
+import { SessionStorageUtil } from "../../sessionStorageUtil";
 
 @Component({
   selector: 'app-game-controller',
   templateUrl: './game-controller.component.html',
-  styleUrls: ['./game-controller.component.scss']
+  styleUrls: [ './game-controller.component.scss' ]
 })
 export class GameControllerComponent {
   @Output() public undoEmitter = new EventEmitter<never>();
@@ -25,6 +25,6 @@ export class GameControllerComponent {
     SessionStorageUtil.reset();
     SessionStorageUtil.saveGameState(null );
     SessionStorageUtil.saveGameDifficulty(null);
-    this.router.navigate(['home']);
+    this.router.navigate([ 'home' ]);
   }
 }

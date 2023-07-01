@@ -10,9 +10,9 @@ import {
   Renderer2,
   ViewChildren
 } from '@angular/core';
-import {Card, DifficultyType} from "../../models";
-import {CdkDragDrop, CdkDragExit, CdkDragStart} from "@angular/cdk/drag-drop";
-import {ConfigurationService} from "../../configuration.service";
+import { Card, DifficultyType } from "../../models";
+import { CdkDragDrop, CdkDragExit, CdkDragStart } from "@angular/cdk/drag-drop";
+import { ConfigurationService } from "../../configuration.service";
 import {
   ActionEmitterPayload,
   DropEmitterPayload,
@@ -23,7 +23,7 @@ import {
 @Component({
   selector: 'app-card-stacks',
   templateUrl: './card-stacks.component.html',
-  styleUrls: ['./card-stacks.component.scss']
+  styleUrls: [ './card-stacks.component.scss' ]
 })
 export class CardStacksComponent {
   @ViewChildren('cardStack') cardStackRefs: QueryList<ElementRef>;
@@ -55,11 +55,11 @@ export class CardStacksComponent {
   }
 
   public onHoverExited($event: CdkDragExit<number>, i: number): void {
-    this.hoverExited.emit({$event, i})
+    this.hoverExited.emit({ $event, i })
   }
 
   public onDrop($event: CdkDragDrop<any>, i: number): void {
-    this.dropEmitter.emit({$event, i});
+    this.dropEmitter.emit({ $event, i });
   }
 
   public canEnterDropList(i: number): boolean {
@@ -73,7 +73,7 @@ export class CardStacksComponent {
   }
 
   public shiftCard($event: CdkDragStart, i: number): void {
-  this.shiftCardEmitter.emit({$event, i})
+    this.shiftCardEmitter.emit({ $event, i })
   }
 
   public shownCards(): Card[] {
@@ -81,7 +81,7 @@ export class CardStacksComponent {
   }
 
   public triggerAction($event: MouseEvent, i: number): void {
-    this.triggerActionEmitter.emit({$event, i});
+    this.triggerActionEmitter.emit({ $event, i });
   }
 
   public getConnectedToDropLists(i: number): string[] {

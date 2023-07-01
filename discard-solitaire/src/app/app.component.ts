@@ -1,17 +1,17 @@
 import {
   Component,
-  OnInit,
+  OnInit
 } from '@angular/core';
-import {Router} from "@angular/router";
-import {RoutesNames} from "./app.module";
-import {ConfigurationService} from "./configuration.service";
-import {SessionStorageUtil} from "./sessionStorageUtil";
+import { Router } from "@angular/router";
+import { RoutesNames } from "./app.module";
+import { ConfigurationService } from "./configuration.service";
+import { SessionStorageUtil } from "./sessionStorageUtil";
 
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: [ './app.component.scss' ]
 })
 export class AppComponent implements OnInit {
 
@@ -27,9 +27,9 @@ export class AppComponent implements OnInit {
     if (gameState && difficulty) {
       this.configurationService.selectedDifficulty = difficulty;
       this.configurationService.savedGameState = gameState;
-      this.router.navigate([RoutesNames.Game]);
+      this.router.navigate([ RoutesNames.Game ]);
     } else  {
-      this.router.navigate([RoutesNames.Home]);
+      this.router.navigate([ RoutesNames.Home ]);
     }
   }
 }

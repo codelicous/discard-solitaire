@@ -9,7 +9,7 @@ import {
   Renderer2,
   ViewChildren
 } from '@angular/core';
-import {CardsHelper} from '../cards-helper';
+import { CardsHelper } from '../cards-helper';
 import {
   Card,
   cardValue,
@@ -18,34 +18,34 @@ import {
   UtilClasses
 } from '../models';
 
-import {cloneDeep} from 'lodash-es';
+import { cloneDeep } from 'lodash-es';
 import {
   CdkDragDrop,
   CdkDragExit,
   CdkDragStart,
   transferArrayItem
 } from '@angular/cdk/drag-drop';
-import {ConfigurationService} from '../configuration.service';
-import {MatDialog} from '@angular/material/dialog';
-import {GameWonModalComponent} from '../game-won-modal/game-won-modal.component';
-import {take, takeUntil, tap} from 'rxjs/operators';
-import {Subject, Subscription} from 'rxjs';
-import {DialogDestination} from '../game-won-modal/models';
-import {ActivatedRoute, Router} from '@angular/router';
-import {SessionStorageUtil} from '../sessionStorageUtil';
-import {FirebaseService} from '../firebase.service';
+import { ConfigurationService } from '../configuration.service';
+import { MatDialog } from '@angular/material/dialog';
+import { GameWonModalComponent } from '../game-won-modal/game-won-modal.component';
+import { take, takeUntil, tap } from 'rxjs/operators';
+import { Subject, Subscription } from 'rxjs';
+import { DialogDestination } from '../game-won-modal/models';
+import { ActivatedRoute, Router } from '@angular/router';
+import { SessionStorageUtil } from '../sessionStorageUtil';
+import { FirebaseService } from '../firebase.service';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss']
+  styleUrls: [ './dashboard.component.scss' ]
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   @ViewChildren('cardStack') cardStackRefs: QueryList<ElementRef>;
   @ViewChildren('cardMargins') cardMarginsRefs: QueryList<ElementRef>;
 
 
-  @HostListener('window:keydown', ['$event'])
+  @HostListener('window:keydown', [ '$event' ])
   public onKeyPress(event: KeyboardEvent) {
     if (event.key === 'z' && event.ctrlKey === true) {
       this.undoGameState();
@@ -55,7 +55,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
   helper: CardsHelper = new CardsHelper();
   public deck: Card[] = this.helper.getDeck();
   public discarded = 0;
-  public cardStacks: Card[][] = [[], [], [], []];
+  public cardStacks: Card[][] =
+    [
+      [],
+      [],
+      [],
+      [] ];
   public cardImage0;
   public cardImage1;
   public cardImage2;
@@ -115,7 +120,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     this.cardStacks = this.cardStacks.map(stack => this.deck.length &&
-      [this.deck.pop(), ...stack] || stack);
+      [ this.deck.pop(),
+        ...stack ] || stack);
     this.updateTopCardImages();
     this.updateGameState();
 
@@ -157,7 +163,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   public deckMarginRep(): number[] {
-    return this.deck.length >= 3 ? [1, 2] : this.deck.length > 1 ? [1] : [];
+    return this.deck.length >= 3 ? [ 1,
+      2 ] : this.deck.length > 1 ? [ 1 ] : [];
   }
 
   public discardIfCan($event: MouseEvent, i: number) {
@@ -208,9 +215,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
       $event.previousContainer.data,
       $event.container.data,
       $event.previousIndex,
-      $event.currentIndex,
+      $event.currentIndex
     );
-    this.cardStacks = [...this.cardStacks];
+    this.cardStacks = [ ...this.cardStacks ];
     this.checkGameState();
     this.updateGameState();
   }
@@ -249,8 +256,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   public unMarkAllCards(): void {
-    [...Array.from(document.querySelectorAll('.top-deck')),
-      ...Array.from(document.querySelectorAll('.card-margin'))].forEach(ref => this.renderer.removeClass(ref, UtilClasses.Marked));
+    [ ...Array.from(document.querySelectorAll('.top-deck')),
+      ...Array.from(document.querySelectorAll('.card-margin')) ].forEach(ref => this.renderer.removeClass(ref, UtilClasses.Marked));
   }
 
   public ngOnDestroy(): void {
@@ -336,7 +343,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     };
     this.discarded = 0;
     this.gameState.undoNumber = 0;
-    this.cardStacks = [[], [], [], []];
+    this.cardStacks = [ [],
+      [],
+      [],
+      [] ];
     this.cardImage1 = null;
     this.cardImage0 = null;
     this.cardImage3 = null;
@@ -371,7 +381,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private openWinnerModal(): void {
     const score = this.calcScore();
 
-    const dialogRef = this.matDialog.open(GameWonModalComponent, {disableClose: true, data: {score}});
+    const dialogRef = this.matDialog.open(GameWonModalComponent, { disableClose: true, data: { score } });
     dialogRef.afterClosed()
       .pipe(
         take(1),
@@ -382,13 +392,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   private navigateFromDialog(destination: DialogDestination): void {
     switch (destination) {
-      case DialogDestination.Home:
-        this.resetGame();
-        this.router.navigate(['home']);
-        SessionStorageUtil.reset();
-        break;
-      case DialogDestination.NewGame:
-        this.resetGame();
+    case DialogDestination.Home:
+      this.resetGame();
+      this.router.navigate([ 'home' ]);
+      SessionStorageUtil.reset();
+      break;
+    case DialogDestination.NewGame:
+      this.resetGame();
     }
   }
 

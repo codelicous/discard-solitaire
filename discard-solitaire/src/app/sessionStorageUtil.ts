@@ -1,4 +1,4 @@
-import {DifficultyType, GameState, SessionStorageKey} from "./models";
+import { DifficultyType, GameState, SessionStorageKey } from "./models";
 
 export class SessionStorageUtil {
   public static saveGameState(gamesState: GameState): void {

@@ -1,5 +1,5 @@
-import {CdkDragDrop, CdkDragExit, CdkDragStart} from '@angular/cdk/drag-drop';
-import {Card} from '../../models';
+import { CdkDragDrop, CdkDragExit, CdkDragStart } from '@angular/cdk/drag-drop';
+import { Card } from '../../models';
 
 export interface ActionEmitterPayload {
   $event: MouseEvent,
