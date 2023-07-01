@@ -1,10 +1,16 @@
-import { RouterModule, Routes } from "@angular/router";
-import { HighScoresComponent } from "./high-scores.component";
-import { NgModule } from "@angular/core";
+import { ResolveFn, RouterModule, Routes } from '@angular/router';
+import { HighScoresComponent } from './high-scores.component';
+import { inject, NgModule } from '@angular/core';
+import { from } from 'rxjs';
+import { Score } from './models';
+import { FirebaseService } from '../firebase.service';
 
+export const highScoresResolver: ResolveFn< Score[]> = () =>
+  from(inject(FirebaseService).getAllScores())
 const routes: Routes = [ {
   path:'',
-  component: HighScoresComponent
+  component: HighScoresComponent,
+  resolve: { highScores: highScoresResolver }
 } ]
 
 @NgModule({
@@ -12,5 +18,4 @@ const routes: Routes = [ {
   exports:  [ RouterModule ]
 })
 export class HighScoresRoutingModule {
-
 }

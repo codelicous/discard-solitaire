@@ -2,10 +2,10 @@ import {
   Component,
   OnInit
 } from '@angular/core';
-import { Router } from "@angular/router";
-import { RoutesNames } from "./app.module";
-import { ConfigurationService } from "./configuration.service";
-import { SessionStorageUtil } from "./sessionStorageUtil";
+import { Router } from '@angular/router';
+import { RoutesNames } from './app.module';
+import { ConfigurationService } from './configuration.service';
+import { SessionStorageUtil } from './sessionStorageUtil';
 
 
 @Component({

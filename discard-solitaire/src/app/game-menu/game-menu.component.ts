@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from "@angular/router";
-import { RoutesNames } from "../app.module";
-import { noop } from "rxjs";
-import { ConfigurationService } from "../configuration.service";
-import { SessionStorageUtil } from "../sessionStorageUtil";
+import { Component, HostBinding, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { RoutesNames } from '../app.module';
+import { noop } from 'rxjs';
+import { ConfigurationService } from '../configuration.service';
+import { SessionStorageUtil } from '../sessionStorageUtil';
 
 @Component({
   selector: 'app-game-menu',
@@ -11,6 +11,8 @@ import { SessionStorageUtil } from "../sessionStorageUtil";
   styleUrls: [ './game-menu.component.scss' ]
 })
 export class GameMenuComponent implements OnInit {
+  @HostBinding('class.loading')
+    isLoading = false;
 
   constructor(private router: Router,
               private configurationService: ConfigurationService) {
@@ -24,11 +26,8 @@ export class GameMenuComponent implements OnInit {
   public startGame(): void {
     this.handleNavigation(RoutesNames.DifficultySelection);
   }
-
-  public howToPlay(): void {
-    window.open('http://www.solitairecentral.com/rules/IdiotsDelight.html', '_blank', 'noopener,noreferrer');
-  }
   public navigateToHighScores() {
+    this.presentLoader();
     this.router.navigate([ RoutesNames.HighScores ])
   }
 
@@ -36,5 +35,9 @@ export class GameMenuComponent implements OnInit {
     this.router.navigate([ routeName ])
       .then(noop)
       .catch(console.log)
+  }
+
+  private presentLoader() {
+    this.isLoading = true
   }
 }

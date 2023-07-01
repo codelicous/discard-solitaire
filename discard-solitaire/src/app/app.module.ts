@@ -9,13 +9,13 @@ import { CardStacksComponent } from './dashboard/card-stacks/card-stacks.compone
 import { InfoBoxComponent } from './dashboard/info-box/info-box.component';
 import { GameControllerComponent } from './dashboard/game-controller/game-controller.component';
 import { GameMenuComponent } from './game-menu/game-menu.component';
-import { RouterModule, Routes } from "@angular/router";
+import { RouterModule, Routes } from '@angular/router';
 import { HowToPlayComponent } from './how-to-play/how-to-play.component';
 import { DifficultySelectionComponent } from './difficulty-selection/difficulty-selection.component';
 import { GameWonModalComponent } from './game-won-modal/game-won-modal.component';
-import { MatDialogModule } from "@angular/material/dialog";
+import { MatDialogModule } from '@angular/material/dialog';
 import { EffectiveRulesComponent } from './difficulty-selection/effective-rules/effective-rules.component';
-import { MatTooltipModule } from "@angular/material/tooltip";
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 export enum RoutesNames  {
   Home = 'home',

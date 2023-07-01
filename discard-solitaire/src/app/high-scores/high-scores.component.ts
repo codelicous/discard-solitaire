@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Score } from "./models";
-import { FirebaseService } from "../firebase.service";
-import { from, Observable } from "rxjs";
-import { map, tap } from "rxjs/operators";
-import _ from 'lodash-es';
+import { Score } from './models';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'app-high-scores',
   templateUrl: './high-scores.component.html',
@@ -14,16 +13,12 @@ export class HighScoresComponent implements OnInit {
   public tableData$: Observable<Score[]>
   public displayedColumns = [ 'name',
     'score',
-    'recordDate' ] ;
-  constructor(private fireBaseService: FirebaseService) {
+    'recordDate' ];
+
+  constructor(private activatedRoute: ActivatedRoute) {
   }
+
   ngOnInit(): void {
-    this.tableData$ = from(this.fireBaseService.getAllScores()).pipe(map(this.initScores),
-      tap(scores=> scores.forEach(score => console.log(_.isDate(score.recordDate)))))
-  }
-
-
-  private initScores(scores: Score[]): Score[] {
-    return scores;
+    this.tableData$ = this.activatedRoute.data.pipe(map( data=> data.highScores));
   }
 }

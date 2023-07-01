@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { difficultyKeys } from "../../models";
-import { ConfigurationService } from "../../configuration.service";
-import { MatDialog } from "@angular/material/dialog";
-import { EffectiveRulesComponent } from "../../difficulty-selection/effective-rules/effective-rules.component";
+import { difficultyKeys } from '../../models';
+import { ConfigurationService } from '../../configuration.service';
+import { MatDialog } from '@angular/material/dialog';
+import { EffectiveRulesComponent } from '../../difficulty-selection/effective-rules/effective-rules.component';
 
 @Component({
   selector: 'app-info-box',

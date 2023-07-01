@@ -8,6 +8,9 @@
   background-color: $background-green;
   flex: 1;
   position: relative;
+  &.loading {
+    cursor: wait;
+  }
 }
 
 .title {
@@ -23,7 +26,7 @@
     height: 50px;
     font-size: 20px;
     margin-bottom: 15px;
-    &:hover {
+    &:hover:not([disabled]) {
       background-color: beige;
       cursor: pointer;
     }

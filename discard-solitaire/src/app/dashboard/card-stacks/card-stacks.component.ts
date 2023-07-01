@@ -10,15 +10,15 @@ import {
   Renderer2,
   ViewChildren
 } from '@angular/core';
-import { Card, DifficultyType } from "../../models";
-import { CdkDragDrop, CdkDragExit, CdkDragStart } from "@angular/cdk/drag-drop";
-import { ConfigurationService } from "../../configuration.service";
+import { Card, DifficultyType } from '../../models';
+import { CdkDragDrop, CdkDragExit, CdkDragStart } from '@angular/cdk/drag-drop';
+import { ConfigurationService } from '../../configuration.service';
 import {
   ActionEmitterPayload,
   DropEmitterPayload,
   HoverExitedEmitterPayload,
   ShiftCardEventEmitterPayload
-} from "./models";
+} from './models';
 
 @Component({
   selector: 'app-card-stacks',

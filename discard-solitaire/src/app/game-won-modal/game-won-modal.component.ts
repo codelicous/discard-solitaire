@@ -1,6 +1,6 @@
 import { Component, Inject, Input } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
-import { DialogData, DialogDestination } from "./models";
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { DialogData, DialogDestination } from './models';
 
 @Component({
   selector: 'app-game-won-modal',

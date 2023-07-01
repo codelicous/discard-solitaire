@@ -1,7 +1,7 @@
 <h1 class="title"> Discard Solitaire </h1>
 
 <div class="menu-container">
-  <button class="btn" (click)="startGame()" > Start New Game</button>
-  <button class="btn" (click)="navigateToHighScores()"> High Scores</button>
+  <button [disabled]="isLoading" class="btn" (click)="startGame()" > Start New Game</button>
+  <button [disabled]="isLoading" class="btn" (click)="navigateToHighScores()"> High Scores</button>
 </div>
 

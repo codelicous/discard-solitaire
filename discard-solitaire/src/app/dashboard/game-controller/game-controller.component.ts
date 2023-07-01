@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { Router } from "@angular/router";
-import { SessionStorageUtil } from "../../sessionStorageUtil";
+import { Router } from '@angular/router';
+import { SessionStorageUtil } from '../../sessionStorageUtil';
 
 @Component({
   selector: 'app-game-controller',

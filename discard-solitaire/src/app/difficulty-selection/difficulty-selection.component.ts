@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { difficultyKeys, DifficultyType } from "../models";
-import { ConfigurationService } from "../configuration.service";
-import { RoutesNames } from "../app.module";
-import { Router } from "@angular/router";
-import { SessionStorageUtil } from "../sessionStorageUtil";
+import { difficultyKeys, DifficultyType } from '../models';
+import { ConfigurationService } from '../configuration.service';
+import { RoutesNames } from '../app.module';
+import { Router } from '@angular/router';
+import { SessionStorageUtil } from '../sessionStorageUtil';
 
 @Component({
   selector: 'app-difficulty-selection',

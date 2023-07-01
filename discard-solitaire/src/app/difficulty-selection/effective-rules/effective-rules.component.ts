@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { DifficultyType, difficultyKeys } from "../../models";
-import { ConfigurationService } from "../../configuration.service";
+import { DifficultyType, difficultyKeys } from '../../models';
+import { ConfigurationService } from '../../configuration.service';
 
 @Component({
   selector: 'app-effective-rules',

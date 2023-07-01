@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { initializeApp } from 'firebase/app';
 import { addDoc, getFirestore, collection,  CollectionReference, DocumentData, getDocs, Timestamp } from 'firebase/firestore';
-import { CloudFireScore, Score } from "./high-scores/models";
-import { DataBaseConfigData } from "./models";
+import { CloudFireScore, Score } from './high-scores/models';
+import { DataBaseConfigData } from './models';
 
 
 
