@@ -1,7 +1,6 @@
 @use '@angular/material' as mat;
 @import 'src/styles.scss';
 
-
 @include mat.core();
 
 :host {
