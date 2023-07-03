@@ -1,13 +1,8 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
-import { DragDropModule } from '@angular/cdk/drag-drop';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CommonModule } from '@angular/common';
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { CardStacksComponent } from './dashboard/card-stacks/card-stacks.component';
-import { InfoBoxComponent } from './dashboard/info-box/info-box.component';
-import { GameControllerComponent } from './dashboard/game-controller/game-controller.component';
 import { GameMenuComponent } from './game-menu/game-menu.component';
 import { RouterModule, Routes } from '@angular/router';
 import { HowToPlayComponent } from './how-to-play/how-to-play.component';
@@ -28,7 +23,7 @@ export enum RoutesNames  {
 const routes: Routes = [
   { path: '', component: GameMenuComponent },
   { path: RoutesNames.Home, component: GameMenuComponent },
-  { path: RoutesNames.Game, component: DashboardComponent },
+  { path: RoutesNames.Game, loadChildren: () => import('../app/dashboard/dashboard.module').then(module => module.DashboardModule) },
   { path: RoutesNames.HowToPlay, component: HowToPlayComponent },
   { path: RoutesNames.DifficultySelection, component: DifficultySelectionComponent },
   { path: RoutesNames.HighScores , loadChildren: ()=> import('./high-scores/high-scores.module').then(module => module.HighScoresModule) }
@@ -37,10 +32,6 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     AppComponent,
-    DashboardComponent,
-    CardStacksComponent,
-    InfoBoxComponent,
-    GameControllerComponent,
     GameMenuComponent,
     HowToPlayComponent,
     DifficultySelectionComponent,
@@ -50,7 +41,6 @@ const routes: Routes = [
   imports: [
     BrowserModule,
     CommonModule,
-    DragDropModule,
     BrowserAnimationsModule,
     MatDialogModule,
     RouterModule.forRoot(routes),
