@@ -27,9 +27,8 @@ import {
 } from '@angular/cdk/drag-drop';
 import { ConfigurationService } from '../configuration.service';
 import { MatDialog } from '@angular/material/dialog';
-import { GameWonModalComponent } from '../game-won-modal/game-won-modal.component';
-import { take, takeUntil, tap } from 'rxjs/operators';
-import { Subject, Subscription } from 'rxjs';
+import { mergeMap, take, takeUntil, tap } from 'rxjs/operators';
+import { forkJoin, from, Subject, Subscription } from 'rxjs';
 import { DialogDestination } from '../game-won-modal/models';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SessionStorageUtil } from '../sessionStorageUtil';
@@ -378,9 +377,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
         (stack[0].value === cardValue.king));
   }
 
-  private openWinnerModal(): void {
+  private async openWinnerModal(): Promise<void> {
     const score = this.calcScore();
-
+    forkJoin([])
+    const { GameWonModalComponent } =  await import('../game-won-modal/game-won-modal.component');
     const dialogRef = this.matDialog.open(GameWonModalComponent, { disableClose: true, data: { score } });
     dialogRef.afterClosed()
       .pipe(

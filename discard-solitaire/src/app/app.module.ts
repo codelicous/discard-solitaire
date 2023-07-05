@@ -6,7 +6,6 @@ import { CommonModule } from '@angular/common';
 import { GameMenuComponent } from './game-menu/game-menu.component';
 import { RouterModule, Routes } from '@angular/router';
 import { HowToPlayComponent } from './how-to-play/how-to-play.component';
-import { GameWonModalComponent } from './game-won-modal/game-won-modal.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
@@ -31,8 +30,7 @@ const routes: Routes = [
   declarations: [
     AppComponent,
     GameMenuComponent,
-    HowToPlayComponent,
-    GameWonModalComponent
+    HowToPlayComponent
   ],
   imports: [
     BrowserModule,

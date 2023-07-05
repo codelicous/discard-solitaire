@@ -3,6 +3,11 @@
 
 <div class="content">Your Score is : {{data.score}}</div>
 
+<div *ngIf="scoreIsInTopTen$">
+  <div>You Got A high Score !</div>
+  <div> Enter your name to save score to high score board</div>
+</div>
+
 <div class="footer">
 <button (click)="dialogRef.close(destination.NewGame)"  class="start-game btn">Start a new Game</button>
 <button (click)="dialogRef.close(destination.Home)"  class="main-menu btn">Main Menu</button>
