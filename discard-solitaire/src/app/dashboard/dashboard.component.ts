@@ -26,13 +26,12 @@ import {
   transferArrayItem
 } from '@angular/cdk/drag-drop';
 import { ConfigurationService } from '../configuration.service';
-import { MatDialog } from '@angular/material/dialog';
-import { mergeMap, take, takeUntil, tap } from 'rxjs/operators';
-import { forkJoin, from, Subject, Subscription } from 'rxjs';
+import { catchError, take, takeUntil, tap } from 'rxjs/operators';
+import { of, Subject, Subscription } from 'rxjs';
 import { DialogDestination } from '../game-won-modal/models';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SessionStorageUtil } from '../sessionStorageUtil';
-import { FirebaseService } from '../firebase.service';
+import { GameWonModalService } from '../game-won-modal/game-won-modal.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -51,7 +50,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
-  helper: CardsHelper = new CardsHelper();
+  public helper: CardsHelper = new CardsHelper();
   public deck: Card[] = this.helper.getDeck();
   public discarded = 0;
   public cardStacks: Card[][] =
@@ -60,11 +59,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
       [],
       [],
       [] ];
-  public cardImage0;
-  public cardImage1;
-  public cardImage2;
-  public cardImage3;
-  private componentDestroyed$ = new Subject();
+  public cardImage0: string;
+  public cardImage1: string;
+  public cardImage2: string;
+  public cardImage3: string;
   public gameState: GameState = {
     deck: [],
     cardStacks: [],
@@ -74,6 +72,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     undoRedoMove: 0,
     discardedBeforeDeal: 0
   }
+  private componentDestroyed$ = new Subject();
   private previousGameState: GameState = {
     deck: [],
     cardStacks: [],
@@ -86,12 +85,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
   public movedIndex: number;
   public movedCard: Card;
 
-  constructor(private renderer: Renderer2,
+  constructor(public configurationService: ConfigurationService,
+              private renderer: Renderer2,
               private router: Router,
               private route: ActivatedRoute,
-              private matDialog: MatDialog,
-              private configurationService: ConfigurationService,
-              private firebaseService: FirebaseService,
+              private gameWonModalService: GameWonModalService,
               private changeDetectorRef: ChangeDetectorRef) {
   }
 
@@ -141,17 +139,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
     return this.route.queryParams.pipe(
       take(1),
       takeUntil(this.componentDestroyed$),
-      tap(() => {
-        if (this.configurationService.savedGameState && this.configurationService.selectedDifficulty) {
-          this.gameState = this.configurationService.savedGameState;
-          this.deck = this.gameState.deck;
-          this.cardStacks = this.gameState.cardStacks;
-          this.calcDiscarded();
-        } else {
-          this.deck = this.helper.getDeck();
-          this.dealToStacks(true);
-        }
-      })).subscribe();
+      tap(this.initGameState.bind(this))).subscribe();
+  }
+
+  private initGameState(): void {
+    if (this.configurationService.savedGameState && this.configurationService.selectedDifficulty) {
+      this.gameState = this.configurationService.savedGameState;
+      this.deck = this.gameState.deck;
+      this.cardStacks = this.gameState.cardStacks;
+      this.calcDiscarded();
+    } else {
+      this.deck = this.helper.getDeck();
+      this.dealToStacks(true);
+    }
   }
 
   private updateTopCardImages() {
@@ -366,7 +366,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   private checkGameState(): void {
     if (this.gameWon()) {
-      this.openWinnerModal();
+      this.openWinnerModal()
       return;
     }
   }
@@ -377,17 +377,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
         (stack[0].value === cardValue.king));
   }
 
-  private async openWinnerModal(): Promise<void> {
+  public openWinnerModal(): void {
     const score = this.calcScore();
-    forkJoin([])
-    const { GameWonModalComponent } =  await import('../game-won-modal/game-won-modal.component');
-    const dialogRef = this.matDialog.open(GameWonModalComponent, { disableClose: true, data: { score } });
-    dialogRef.afterClosed()
-      .pipe(
-        take(1),
-        takeUntil(this.componentDestroyed$),
-        tap(this.navigateFromDialog.bind(this))
-      ).subscribe();
+    this.configurationService.isLoading = true;
+    this.gameWonModalService.gameWonModalRef(score).pipe(
+      take(1),
+      takeUntil(this.componentDestroyed$),
+      tap(this.navigateFromDialog.bind(this)),
+      catchError(err => {
+        console.log(err)
+        return(of(err));
+      })
+    ).subscribe();
   }
 
   private navigateFromDialog(destination: DialogDestination): void {
@@ -399,6 +400,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       break;
     case DialogDestination.NewGame:
       this.resetGame();
+      SessionStorageUtil.reset();
     }
   }
 

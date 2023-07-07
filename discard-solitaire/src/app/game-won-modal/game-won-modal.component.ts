@@ -1,7 +1,7 @@
-import { Component, Inject, Input } from '@angular/core';
+import { Component, Inject, Input, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { DialogData, DialogDestination } from './models';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -15,12 +15,26 @@ import { CommonModule } from '@angular/common';
   ]
 })
 
-export class GameWonModalComponent {
+export class GameWonModalComponent implements OnInit{
   @Input() score = 0;
   readonly destination = DialogDestination;
-  scoreIsInTopTen$: any;
+  public formGroup: FormGroup;
   constructor(public dialogRef: MatDialogRef<GameWonModalComponent>,
               @Inject(MAT_DIALOG_DATA) public data: DialogData) {
   }
 
+  ngOnInit(): void {
+    if(this.data.topTenEligible) {
+      this.initFormData();
+    }
+  }
+
+  private initFormData() {
+    this.formGroup = new FormGroup({
+      name: new FormControl( '',
+        [ Validators.required,
+          Validators.maxLength(100) ]
+      )
+    })
+  }
 }

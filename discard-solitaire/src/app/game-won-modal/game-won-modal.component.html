@@ -3,9 +3,12 @@
 
 <div class="content">Your Score is : {{data.score}}</div>
 
-<div *ngIf="scoreIsInTopTen$">
+<div *ngIf="data.topTenEligible">
   <div>You Got A high Score !</div>
   <div> Enter your name to save score to high score board</div>
+  <form [formGroup]="formGroup">
+    <input formControlName="name" type="text">
+  </form>
 </div>
 
 <div class="footer">

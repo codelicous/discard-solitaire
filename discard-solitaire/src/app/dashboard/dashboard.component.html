@@ -27,6 +27,7 @@
       (undoEmitter)="undoGameState()"
       (resetEmitter)="resetGame()">
     </app-game-controller>
+    <button (click)="openWinnerModal()">modal</button>
   </div>
   <app-card-stacks
     [cardStacks]="cardStacks"
@@ -39,4 +40,7 @@
     (hoverExited)="onHoverExited($event.$event, $event.i)"
   >
   </app-card-stacks>
+</div>
+<div id="overlay" *ngIf="configurationService.isLoading">
+  <div class="loader"></div>
 </div>

@@ -7,4 +7,5 @@ import { DifficultyType, GameState } from './models';
 export class ConfigurationService {
   public selectedDifficulty: DifficultyType;
   public savedGameState: GameState;
+  public isLoading: boolean;
 }
