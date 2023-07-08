@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RoutesNames } from '../app.module';
+
 @Component({
   selector: 'app-high-scores',
   templateUrl: './high-scores.component.html',
@@ -21,10 +22,15 @@ export class HighScoresComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.tableData$ = this.activatedRoute.data.pipe(map( data=> data.highScores), tap(console.log));
+    this.tableData$ = this.activatedRoute.data.pipe(
+      map( data=> this.sortByScore(data.highScores)));
   }
 
   public mainMenu() {
     this.router.navigate([ RoutesNames.Home ])
+  }
+
+  public sortByScore(scores: Score[]): Score[] {
+    return  scores.sort((a,b)=> b.score - a.score);
   }
 }
