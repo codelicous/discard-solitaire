@@ -9,7 +9,8 @@
   <form class="submit-form" [formGroup]="formGroup">
     <input class="name-field" formControlName="name" type="text">
     <button
-      [disabled]="!formGroup.valid || scoreSent || isUpdating"
+      *ngIf="!scoreSent"
+      [disabled]="!formGroup.valid || isUpdating"
       class="btn"
       (click)="updateScore()"  type="submit">Update</button>
     <div

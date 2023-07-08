@@ -17,7 +17,6 @@ import { FirebaseService } from '../firebase.service';
 })
 
 export class GameWonModalComponent implements OnInit{
-  @Input() score = 0;
   readonly destination = DialogDestination;
   public formGroup: FormGroup;
   public scoreSent: boolean;
@@ -35,7 +34,7 @@ export class GameWonModalComponent implements OnInit{
 
   public updateScore(): void {
     this.isUpdating = true;
-    this.firebaseService.addNewScore( { name: this.formGroup.value.name , score: 0 })
+    this.firebaseService.addNewScore( { name: this.formGroup.value.name , score: this.data.score })
       .then(this.onUpdateScore.bind(this));
   }
 
