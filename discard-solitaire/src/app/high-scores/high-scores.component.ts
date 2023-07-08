@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Score } from './models';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { ActivatedRoute } from '@angular/router';
+import { map, tap } from 'rxjs/operators';
+import { ActivatedRoute, Router } from '@angular/router';
+import { RoutesNames } from '../app.module';
 @Component({
   selector: 'app-high-scores',
   templateUrl: './high-scores.component.html',
@@ -15,10 +16,15 @@ export class HighScoresComponent implements OnInit {
     'score',
     'recordDate' ];
 
-  constructor(private activatedRoute: ActivatedRoute) {
+  constructor(private activatedRoute: ActivatedRoute,
+              private router: Router) {
   }
 
   ngOnInit(): void {
-    this.tableData$ = this.activatedRoute.data.pipe(map( data=> data.highScores));
+    this.tableData$ = this.activatedRoute.data.pipe(map( data=> data.highScores), tap(console.log));
+  }
+
+  public mainMenu() {
+    this.router.navigate([ RoutesNames.Home ])
   }
 }

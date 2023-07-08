@@ -8,5 +8,6 @@ export interface DialogData {
 
 export enum DialogDestination {
   NewGame,
-  Home
+  Home,
+  HighScores
 }

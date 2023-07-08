@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FirebaseService } from '../firebase.service';
-import { forkJoin, from, Observable, of } from 'rxjs';
-import { catchError, mergeMap } from 'rxjs/operators';
+import { forkJoin, from, Observable } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
 import { ConfigurationService } from '../configuration.service';
 import { DialogData } from './models';
 import { Score } from '../high-scores/models';

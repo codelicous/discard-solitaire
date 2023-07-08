@@ -5,9 +5,21 @@
 
 <div *ngIf="data.topTenEligible">
   <div>You Got A high Score !</div>
-  <div> Enter your name to save score to high score board</div>
-  <form [formGroup]="formGroup">
-    <input formControlName="name" type="text">
+  <div> Enter your name to save score to high score board:</div>
+  <form class="submit-form" [formGroup]="formGroup">
+    <input class="name-field" formControlName="name" type="text">
+    <button
+      [disabled]="!formGroup.valid || scoreSent || isUpdating"
+      class="btn"
+      (click)="updateScore()"  type="submit">Update</button>
+    <div
+      class="score-sent-section"
+      *ngIf="scoreSent">
+      <div>Score record was updated!</div>
+    <button
+      class="btn"
+      (click)="dialogRef.close(destination.HighScores)"> Go To High Scores Table</button>
+    </div>
   </form>
 </div>
 

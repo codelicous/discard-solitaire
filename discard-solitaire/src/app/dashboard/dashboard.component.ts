@@ -32,6 +32,7 @@ import { DialogDestination } from '../game-won-modal/models';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SessionStorageUtil } from '../sessionStorageUtil';
 import { GameWonModalService } from '../game-won-modal/game-won-modal.service';
+import { RoutesNames } from '../app.module';
 
 @Component({
   selector: 'app-dashboard',
@@ -395,12 +396,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
     switch (destination) {
     case DialogDestination.Home:
       this.resetGame();
-      this.router.navigate([ 'home' ]);
+      this.router.navigate([ RoutesNames.Home ]);
       SessionStorageUtil.reset();
       break;
     case DialogDestination.NewGame:
       this.resetGame();
       SessionStorageUtil.reset();
+      break;
+    case DialogDestination.HighScores:
+      this.router.navigate([ RoutesNames.HighScores ]);
+      break
     }
   }
 

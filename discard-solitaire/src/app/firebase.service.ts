@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { initializeApp } from 'firebase/app';
-import { addDoc, getFirestore, collection,  CollectionReference, DocumentData, getDocs, Timestamp } from 'firebase/firestore';
+import { addDoc, getFirestore, collection,  CollectionReference, DocumentData, getDocs, Timestamp, DocumentReference } from 'firebase/firestore';
 import { CloudFireScore, Score } from './high-scores/models';
 import { DataBaseConfigData } from './models';
 
@@ -27,14 +27,15 @@ export class FirebaseService {
     this.db = getFirestore(app);
   }
 
-  public addNewScore(score: Score): void {
+  public addNewScore(score: Score): Promise<DocumentReference<DocumentData> | void> {
     //
+    score = { ...score, recordDate: new Date() };
     if(!this.isValidScore(score)) {
-      return;
+      return Promise.resolve(null);
     }
     // adding score
-    addDoc(this.getCollectionReference(), score)
-      .then(this.handleAddSuccess)
+    return addDoc(this.getCollectionReference(), score)
+      .then(this.handleAddSuccess.bind(this))
       .catch(this.handleError);
   }
 

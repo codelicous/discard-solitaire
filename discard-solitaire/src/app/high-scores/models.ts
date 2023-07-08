@@ -4,7 +4,7 @@ import Timestamp = firebase.firestore.Timestamp;
 export interface Score {
   name: string,
   score: number
-  recordDate: Date
+  recordDate?: Date
 }
 
 export interface CloudFireScore {
