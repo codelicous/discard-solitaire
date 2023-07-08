@@ -1,2 +1,7 @@
-
+<div *ngIf="!isMobile; else mobileBlock">
 <router-outlet></router-outlet>
+</div>
+
+<ng-template #mobileBlock>
+  <h1>This application is not available on mobile devices.</h1>
+</ng-template>
