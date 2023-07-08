@@ -12,3 +12,7 @@ export interface CloudFireScore {
   score: number
   recordDate: Timestamp
 }
+
+export interface HighScoreResolve {
+  highScores: Score[];
+}
