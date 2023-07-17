@@ -7,12 +7,16 @@ import {
   enumToArrayNumericValues
 } from './models';
 import { shuffle } from 'lodash-es';
+import { PreloadService } from './preload.service';
+
 export class CardsHelper {
 
   private readonly cardDeck: Card[];
 
-  constructor() {
+  constructor(private preLoadService: PreloadService) {
     this.cardDeck = this.generateDeck();
+    const cardImages = this.cardDeck.map(card => card.img);
+    this.preLoadService.preloadImages(cardImages);
   }
 
   private generateDeck(): Card[] {

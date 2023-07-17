@@ -33,6 +33,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { SessionStorageUtil } from '../sessionStorageUtil';
 import { GameWonModalService } from '../game-won-modal/game-won-modal.service';
 import { RoutesNames } from '../app.module';
+import { PreloadService } from '../preload.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -51,7 +52,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
-  public helper: CardsHelper = new CardsHelper();
+  public helper: CardsHelper = new CardsHelper(this.preLoadService);
   public deck: Card[] = this.helper.getDeck();
   public discarded = 0;
   public cardStacks: Card[][] =
@@ -90,6 +91,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
               private renderer: Renderer2,
               private router: Router,
               private route: ActivatedRoute,
+              private preLoadService:PreloadService,
               private gameWonModalService: GameWonModalService,
               private changeDetectorRef: ChangeDetectorRef) {
   }
